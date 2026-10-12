@@ -194,8 +194,37 @@ export const HospitalShell: React.FC = () => {
     }
   };
 
+  const currentDateString = new Date().toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  const getRoleCategoryLabel = (role: HospitalRole): string => {
+    switch (role) {
+      case 'DOCTOR':
+      case 'NURSE':
+      case 'EMERGENCY_STAFF':
+        return 'Clinical Care';
+      case 'PHARMACIST':
+      case 'LABORATORY_STAFF':
+      case 'RADIOLOGY_STAFF':
+        return 'Diagnostics & Rx';
+      case 'PATIENT':
+      case 'RECEPTIONIST':
+        return 'Patient Access';
+      case 'BILLING_STAFF':
+      case 'INSURANCE_STAFF':
+      case 'HR_STAFF':
+        return 'Operations & Finance';
+      default:
+        return 'Governance & Admin';
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-slate-100 dark:bg-[#0B1120] overflow-hidden font-sans text-slate-800 dark:text-[#F8FAFC]">
+    <div className="flex h-screen bg-[#F4F7FA] dark:bg-[#0B1120] overflow-hidden font-sans text-[#1E293B] dark:text-[#F8FAFC]">
       {/* Sidebar Navigation */}
       <Sidebar
         currentRole={currentRole}
@@ -203,37 +232,46 @@ export const HospitalShell: React.FC = () => {
         onOpenEval={() => setIsEvalOpen(true)}
         activeNav={activeNav}
         setActiveNav={setActiveNav}
+        currentUser={currentUser}
       />
 
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         
         {/* Top Header Command Bar */}
-        <header className="h-16 bg-white dark:bg-[#111827] border-b border-slate-200 dark:border-[#293548] px-5 flex items-center justify-between gap-3 z-20 shrink-0">
+        <header className="h-16 bg-white dark:bg-[#111827] border-b border-[#DCE4EA] dark:border-[#293548] px-5 flex items-center justify-between gap-3 z-20 shrink-0">
           
-          {/* Left: Department & Campus indicator + Global Search */}
+          {/* Left: Breadcrumbs & Campus Context */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
-            <div className="hidden sm:flex flex-col shrink-0">
-              <span className="text-xs font-bold text-slate-900 leading-tight">
-                CityCare Multi-Speciality
-              </span>
-              <span className="text-[10px] text-blue-600 font-semibold leading-tight">
-                {currentUser.department} • Central Campus
-              </span>
+            <div className="flex flex-col shrink-0 min-w-0">
+              {/* Breadcrumb Navigation */}
+              <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-slate-500">
+                <span className="font-semibold text-slate-700 dark:text-slate-300">CityCare</span>
+                <span>/</span>
+                <span>{getRoleCategoryLabel(currentRole)}</span>
+                <span>/</span>
+                <span className="text-[#0F8B8D] font-bold truncate">{currentUser.name.split(' ')[0]} Workstation</span>
+              </nav>
+
+              <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400">
+                <span className="font-mono text-[#0F8B8D] font-semibold">{currentUser.department}</span>
+                <span>•</span>
+                <span>{currentDateString}</span>
+              </div>
             </div>
 
             {/* Global Search Button / Trigger */}
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="flex-1 flex items-center justify-between pl-3 pr-2.5 py-1.5 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-lg text-xs text-slate-500 transition-all text-left group"
+              className="hidden md:flex flex-1 items-center justify-between pl-3 pr-2.5 py-1.5 bg-[#F4F7FA] hover:bg-slate-100 dark:bg-[#172033] dark:hover:bg-[#1D293D] border border-[#DCE4EA] dark:border-[#293548] rounded-lg text-xs text-slate-500 transition-all text-left group ml-2"
             >
               <div className="flex items-center gap-2">
-                <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                <span className="text-slate-400 group-hover:text-slate-600 truncate">
-                  Search patients, appointments, EMR records, SOPs...
+                <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0F8B8D] transition-colors" />
+                <span className="text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 truncate">
+                  Search patients, orders, EMR, SOPs...
                 </span>
               </div>
-              <kbd className="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-200 rounded text-slate-400 shadow-2xs">
+              <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono bg-white dark:bg-[#111827] border border-[#DCE4EA] dark:border-[#293548] rounded text-slate-400 shadow-2xs">
                 Ctrl + K
               </kbd>
             </button>

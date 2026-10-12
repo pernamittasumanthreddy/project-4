@@ -5,7 +5,7 @@ import { HospitalRole, UserProfile } from '@/lib/types/roles';
 import { DEMO_USERS } from '@/lib/data/mockDatabase';
 import { ROLE_CONFIGS } from '@/lib/data/roleConfigs';
 import { ThemeToggle } from '../theme/ThemeToggle';
-import { WorkstationLaunchModal } from './WorkstationLaunchModal';
+import { WorkstationLaunchModal, ROLE_CREDENTIALS } from './WorkstationLaunchModal';
 import { RoleAccessScopeModal } from './RoleAccessScopeModal';
 import { SecurityCenterModal } from './SecurityCenterModal';
 import { GatewayNotificationPopover } from './GatewayNotificationPopover';
@@ -16,7 +16,7 @@ import {
   Users, Building, Award, Flame, BadgeCheck, 
   Lock, ArrowRight, Bot, Sparkles, CheckCircle2, Search, 
   SlidersHorizontal, CheckSquare, ClipboardList, UserCheck, ArrowLeft,
-  Shield, Bell, Server, X
+  Shield, Bell, Server, X, Eye, EyeOff, Loader2, KeyRound, Mail
 } from 'lucide-react';
 
 interface HospitalLoginPortalProps {
@@ -249,6 +249,58 @@ export const HospitalLoginPortal: React.FC<HospitalLoginPortalProps> = ({ onLogi
   const [scopeRole, setScopeRole] = useState<HospitalRole | null>(null);
   const [isSecurityCenterOpen, setIsSecurityCenterOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [showForgotModal, setShowForgotModal] = useState(false);
+
+  // Two-column authentication panel state
+  const [selectedAuthRole, setSelectedAuthRole] = useState<HospitalRole>('DOCTOR');
+  const [authEmail, setAuthEmail] = useState(ROLE_CREDENTIALS['DOCTOR']?.email || 'marcus.vance@hopkins-health.org');
+  const [authPassword, setAuthPassword] = useState(ROLE_CREDENTIALS['DOCTOR']?.defaultPassword || 'DocCardio#2024');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const resolveRoleFromEmail = (email: string): HospitalRole | null => {
+    const clean = email.toLowerCase().trim();
+    for (const [role, creds] of Object.entries(ROLE_CREDENTIALS)) {
+      if (creds.email.toLowerCase() === clean) return role as HospitalRole;
+    }
+    if (clean.includes('doc') || clean.includes('vance')) return 'DOCTOR';
+    if (clean.includes('nurse') || clean.includes('jenkins')) return 'NURSE';
+    if (clean.includes('trauma') || clean.includes('thorne') || clean.includes('emergency')) return 'EMERGENCY_STAFF';
+    if (clean.includes('pharm') || clean.includes('miller')) return 'PHARMACIST';
+    if (clean.includes('lab') || clean.includes('chen')) return 'LABORATORY_STAFF';
+    if (clean.includes('rad') || clean.includes('blake')) return 'RADIOLOGY_STAFF';
+    if (clean.includes('patient') || clean.includes('anderson')) return 'PATIENT';
+    if (clean.includes('reception')) return 'RECEPTIONIST';
+    if (clean.includes('bill') || clean.includes('claire')) return 'BILLING_STAFF';
+    if (clean.includes('insur') || clean.includes('chang')) return 'INSURANCE_STAFF';
+    if (clean.includes('hr') || clean.includes('davis')) return 'HR_STAFF';
+    if (clean.includes('dept') || clean.includes('house')) return 'DEPARTMENT_MANAGER';
+    if (clean.includes('exec') || clean.includes('hastings')) return 'MANAGEMENT_EXECUTIVE';
+    if (clean.includes('superadmin')) return 'SUPER_ADMIN';
+    if (clean.includes('admin')) return 'HOSPITAL_ADMIN';
+    return null;
+  };
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!authEmail.trim()) {
+      setAuthError('Please enter your Institutional User ID or Email.');
+      return;
+    }
+    if (!authPassword.trim()) {
+      setAuthError('Please enter your workstation password.');
+      return;
+    }
+    const resolved = resolveRoleFromEmail(authEmail) || selectedAuthRole;
+    setAuthError(null);
+    setIsAuthenticating(true);
+    setTimeout(() => {
+      setIsAuthenticating(false);
+      onLogin(resolved);
+    }, 250);
+  };
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -431,53 +483,208 @@ export const HospitalLoginPortal: React.FC<HospitalLoginPortalProps> = ({ onLogi
 
       {/* MAIN CONTAINER */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {/* 2. HERO / GATEWAY SECTION */}
-        <section className="mb-8 sm:mb-10">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#111827] border border-[#DCE4EF] dark:border-[#293548] shadow-xs">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
-                <Lock className="w-3.5 h-3.5" />
-                Federated Identity & Clinical Gateway
+        {/* 2. TWO-COLUMN MASTER ENTERPRISE LOGIN PANEL */}
+        <section className="mb-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
+          {/* LEFT COLUMN: Deep Navy Branding & Hospital Identity Panel (#123B52) */}
+          <div className="lg:col-span-6 bg-[#123B52] text-[#D7E6EE] rounded-2xl p-6 sm:p-9 shadow-md flex flex-col justify-between border border-[#0B2C3D] relative overflow-hidden">
+            {/* Background Medical Tone Glow */}
+            <div className="absolute top-0 right-0 w-72 h-72 bg-radial from-[#0F8B8D]/25 via-transparent to-transparent pointer-events-none -mr-20 -mt-20 rounded-full" />
+
+            <div>
+              {/* Hospital Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0B2C3D] border border-[#0F8B8D]/40 text-[#D7E6EE] text-xs font-semibold mb-5">
+                <ShieldCheck className="w-4 h-4 text-[#0F8B8D]" />
+                <span>CityCare Multispecialty Hospital Network</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight leading-tight">
-                Hospital Enterprise Access Gateway
+
+              {/* Title & Welcome */}
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                Enterprise Clinical & Hospital Operating System
               </h1>
-              <p className="mt-2.5 text-sm sm:text-base text-[#64748B] dark:text-[#A8B4C7] leading-relaxed">
-                Select your role credential to access your dedicated clinical or operational workstation. Each session initializes a sandboxed Personal RAG assistant strictly restricted to your authorized hospital documents.
+
+              <p className="mt-3 text-xs sm:text-sm text-[#D7E6EE]/85 leading-relaxed">
+                Integrated workstation authentication for clinical practitioners, registered nursing staff, diagnostic laboratory, pharmacy, radiology PACS, and hospital administrative leadership.
               </p>
+
+              {/* Security & Operational Badges */}
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mt-6 pt-6 border-t border-[#0B2C3D]">
+                <div className="p-3 rounded-xl bg-[#0B2C3D]/70 border border-[#0F8B8D]/20">
+                  <div className="text-[10px] uppercase font-bold text-[#D7E6EE]/60 tracking-wider">Accreditation</div>
+                  <div className="text-xs sm:text-sm font-bold text-white mt-0.5">HIPAA / HITECH</div>
+                  <div className="text-[10px] text-teal-300 mt-0.5">Level 3 Verified</div>
+                </div>
+                <div className="p-3 rounded-xl bg-[#0B2C3D]/70 border border-[#0F8B8D]/20">
+                  <div className="text-[10px] uppercase font-bold text-[#D7E6EE]/60 tracking-wider">Directories</div>
+                  <div className="text-xs sm:text-sm font-bold text-white mt-0.5">Kerberos AD</div>
+                  <div className="text-[10px] text-emerald-400 mt-0.5">SSO Connected</div>
+                </div>
+                <div className="p-3 rounded-xl bg-[#0B2C3D]/70 border border-[#0F8B8D]/20">
+                  <div className="text-[10px] uppercase font-bold text-[#D7E6EE]/60 tracking-wider">Isolation</div>
+                  <div className="text-xs sm:text-sm font-bold text-white mt-0.5">15 Workstations</div>
+                  <div className="text-[10px] text-blue-300 mt-0.5">RBAC Sandboxes</div>
+                </div>
+              </div>
             </div>
 
-            {/* Right: Two Enterprise Security Metrics */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 shrink-0 lg:w-80">
-              <div className="p-4 rounded-xl border border-[#DCE4EF] dark:border-[#293548] bg-[#F5F8FC] dark:bg-[#172033] shadow-2xs">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Isolation
-                  </span>
-                  <Server className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div className="text-xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC]">
-                  15 Workstations
-                </div>
-                <div className="text-[11px] text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
-                  Role-Isolated Sandboxes
-                </div>
+            {/* Quick Role Preset Picker (Evaluator / Reviewer Assistant) */}
+            <div className="mt-6 pt-5 border-t border-[#0B2C3D]">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-semibold text-white flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#0F8B8D]" />
+                  <span>Quick-Fill Workstation Role:</span>
+                </span>
+                <span className="text-[10px] text-[#D7E6EE]/60">Select to test</span>
+              </div>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {(['DOCTOR', 'NURSE', 'EMERGENCY_STAFF', 'PHARMACIST', 'LABORATORY_STAFF', 'RADIOLOGY_STAFF', 'PATIENT', 'HOSPITAL_ADMIN', 'SUPER_ADMIN'] as HospitalRole[]).map((r) => {
+                  const isSelected = selectedAuthRole === r;
+                  const label = ROLE_CONFIGS[r]?.displayName || r;
+                  return (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAuthRole(r);
+                        setAuthEmail(ROLE_CREDENTIALS[r].email);
+                        setAuthPassword(ROLE_CREDENTIALS[r].defaultPassword);
+                        setAuthError(null);
+                      }}
+                      className={`text-[11px] px-2.5 py-1 rounded-lg font-medium transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#0F8B8D] text-white font-bold shadow-xs'
+                          : 'bg-[#0B2C3D] text-[#D7E6EE] hover:bg-[#082230] hover:text-white'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: White Authentication Panel (#FFFFFF, Teal Button #0F8B8D) */}
+          <div className="lg:col-span-6 bg-white dark:bg-[#111827] rounded-2xl p-6 sm:p-9 shadow-md border border-[#DCE4EA] dark:border-[#293548] flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-[#1E293B] dark:text-white tracking-tight">
+                  Workstation Authentication
+                </h2>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/60 text-[#0F8B8D] font-bold border border-teal-200 dark:border-teal-800">
+                  TLS 1.3 SECURE
+                </span>
               </div>
 
-              <div className="p-4 rounded-xl border border-[#DCE4EF] dark:border-[#293548] bg-[#F5F8FC] dark:bg-[#172033] shadow-2xs">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                    Security
-                  </span>
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mb-6">
+                Enter your institutional User ID or corporate email to initialize your clinical session.
+              </p>
+
+              {/* Form */}
+              <form onSubmit={handleAuthSubmit} className="space-y-4">
+                {/* User ID / Email */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#1E293B] dark:text-[#F8FAFC] mb-1.5">
+                    Institutional Email / User ID
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={authEmail}
+                      onChange={(e) => {
+                        setAuthEmail(e.target.value);
+                        setAuthError(null);
+                      }}
+                      placeholder="e.g. physician@hopkins-health.org"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-[#DCE4EA] dark:border-[#293548] bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-white text-xs font-mono focus:outline-hidden focus:ring-2 focus:ring-[#0F8B8D]/50 focus:border-[#0F8B8D] transition-all"
+                    />
+                  </div>
                 </div>
-                <div className="text-xl font-extrabold text-[#0F172A] dark:text-[#F8FAFC]">
-                  100% Verified
+
+                {/* Password with Visibility Toggle */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-[#1E293B] dark:text-[#F8FAFC]">
+                      Password
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotModal(true)}
+                      className="text-xs font-semibold text-[#0F8B8D] hover:underline cursor-pointer"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={authPassword}
+                      onChange={(e) => {
+                        setAuthPassword(e.target.value);
+                        setAuthError(null);
+                      }}
+                      placeholder="Enter password"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-[#DCE4EA] dark:border-[#293548] bg-white dark:bg-[#0F172A] text-[#1E293B] dark:text-white text-xs font-mono focus:outline-hidden focus:ring-2 focus:ring-[#0F8B8D]/50 focus:border-[#0F8B8D] transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
+                      title={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
-                <div className="text-[11px] text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
-                  Kerberos & HIPAA Grounded
+
+                {/* Remember Me Checkbox */}
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#A8B4C7]">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 rounded-sm border-[#DCE4EA] text-[#0F8B8D] focus:ring-[#0F8B8D]"
+                    />
+                    <span>Remember workstation session</span>
+                  </label>
+                  <span className="text-[11px] text-slate-400">15-min idle timeout</span>
                 </div>
-              </div>
+
+                {/* Error Banner */}
+                {authError && (
+                  <div className="p-3 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs flex items-center gap-2 animate-in fade-in">
+                    <ShieldAlert className="w-4 h-4 shrink-0 text-red-600" />
+                    <span>{authError}</span>
+                  </div>
+                )}
+
+                {/* Primary Teal Login Button */}
+                <button
+                  type="submit"
+                  disabled={isAuthenticating}
+                  className="w-full h-12 rounded-xl bg-[#0F8B8D] hover:bg-[#0B7476] active:bg-[#085B5D] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all cursor-pointer disabled:opacity-75"
+                >
+                  {isAuthenticating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      <span>Authenticating Workstation...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign In to Workstation</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Quick Demo Helper Hint */}
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-[#64748B] dark:text-[#A8B4C7]">
+              <span>Active Role: <strong className="text-[#1E293B] dark:text-white font-semibold">{ROLE_CONFIGS[selectedAuthRole]?.displayName || selectedAuthRole}</strong></span>
+              <span className="text-teal-600 dark:text-teal-400 font-medium">Session audit enabled</span>
             </div>
           </div>
         </section>
@@ -734,6 +941,47 @@ export const HospitalLoginPortal: React.FC<HospitalLoginPortalProps> = ({ onLogi
         isOpen={isSecurityCenterOpen}
         onClose={() => setIsSecurityCenterOpen(false)}
       />
+
+      {/* Institutional Password Reset Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/75 backdrop-blur-xs animate-in fade-in">
+          <div className="relative w-full max-w-md bg-white dark:bg-[#111827] border border-[#DCE4EA] dark:border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-[#123B52] dark:text-teal-400 font-bold text-base">
+                <KeyRound className="w-5 h-5 text-[#0F8B8D]" />
+                <span>Password Recovery Assistance</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+              Clinical workstations authenticate via Kerberos Active Directory federated SSO. To reset your hospital password, contact the Enterprise IT Operations Helpdesk or use the quick role autofill presets.
+            </p>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#1A2436] border border-slate-200 dark:border-slate-700 text-xs space-y-1 mb-5">
+              <div className="flex justify-between">
+                <span className="text-slate-500">IT Helpdesk Ext:</span>
+                <span className="font-mono font-bold text-slate-800 dark:text-white">x4400 (Internal)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500">Self-Service Portal:</span>
+                <span className="font-mono text-teal-600 dark:text-teal-400">ad.hopkins-health.org/sspr</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowForgotModal(false)}
+              className="w-full h-10 rounded-xl bg-[#0F8B8D] hover:bg-[#0B7476] text-white font-bold text-xs"
+            >
+              Return to Workstation Login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
