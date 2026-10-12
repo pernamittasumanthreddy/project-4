@@ -53,8 +53,13 @@ router.register(r'radiology/studies', ImagingStudyViewSet, basename='ris-studies
 router.register(r'radiology/reports', RadiologyReportViewSet, basename='ris-reports')
 
 urlpatterns = [
-    # Direct redirects for root and docs
-    path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
+    # Master Frontend SPA at Root /
+    path("", serve, {
+        "document_root": settings.BASE_DIR.parent / "frontend" / "dist",
+        "path": "index.html",
+    }, name="frontend-home"),
+
+    # Direct redirects for docs
     path("docs/", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("docs", RedirectView.as_view(url="/api/docs/", permanent=False)),
 
