@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ==========================================================================
    CARETRUST HEALTHCARE ENTERPRISE SAAS DESIGN SYSTEM
    Professional Medical UI/UX - Accessible Contrast - Responsive Layouts
