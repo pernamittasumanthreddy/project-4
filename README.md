@@ -1,96 +1,74 @@
-# CareTrust Health System — HMS Multi-Tenant Enterprise SaaS
+# Hospital Management System (HMS) - Multi-Tenant Healthcare SaaS
 
-> **Enterprise Multi-Tenant Healthcare Platform — Member 7 Delivery**  
-> **Patient Portal • Doctor Portal • Telemedicine & WebRTC • Notifications • Automated QA • Cross-Module Integration**  
-> *100% Local Execution • Zero Paid External API Keys • 16/16 Automated Tests Passed*
+Welcome to the **Hospital Management System (HMS)** monorepo, a multi-tenant healthcare enterprise platform.
 
----
+## Architecture Overview
 
-## 1. System Identity & Overview
+This platform is structured into modular domains maintained collaboratively by 7 functional domain teams:
 
-CareTrust HMS is a production-grade multi-tenant healthcare platform built with **Python 3.12, Django 6, Django REST Framework, React 18, TypeScript, and Vite**.
-
-This repository contains the complete **Member 7** module delivery integrating all 7 team domains:
-1. **Patient Portal**: Personalized dashboard, real-time appointment booking wizard, longitudinal medical records, approved lab/radiology viewer, itemized invoice viewer with sandbox payments, profile management.
-2. **Doctor Portal**: Clinician dashboard, daily and weekly agenda schedule, clinical consultation workstation (SOAP notes, vitals recording, ICD-10 diagnosis, prescription writing, digital sign-off lock).
-3. **Telemedicine Suite**: Browser-to-browser WebRTC consultation room with public Google STUN fallback, pre-join camera/mic device checks, in-call chat, doctor clinical quick notes, and session lifecycle tracking.
-4. **Notification Center**: Real-time in-app notifications, unread badges, event deduplication, and safe local Email/SMS delivery adapters.
-5. **Cross-Module Integration**: Clean integration contracts with Member 1 (Auth/Tenancy), Member 2 (Appointments), Member 3 (EMR), Member 4 (Diagnostics), Member 5 (Pharmacy), and Member 6 (Billing).
-6. **Automated QA & CI/CD**: 16 unit, integration, and E2E test cases passing with 100% success rate, alongside GitHub Actions workflows.
+- **Member 1 (Platform & SaaS Admin)**: Multi-hospital tenants, branches, RBAC, subscription tiers, audit logging.
+- **Member 2 (Patient Management & Appointments)**: Patient Master Records (MPI), MRN generation, duplicate resolution, appointment scheduling, queue/token engine, OPD/IPD admission & bed management, patient portal.
+- **Member 3 (Clinical & EMR/EHR)**: Doctor/nurse workspaces, clinical encounters, vitals, e-prescriptions, nursing handovers.
+- **Member 4 (Laboratory & Radiology)**: Lab order processing, specimen tracking, DICOM studies, imaging viewer integration.
+- **Member 5 (Pharmacy & Inventory)**: Drug formulary, batch/expiry tracking, dispensing, purchase orders.
+- **Member 6 (Billing & Finance)**: Service catalogue, itemized invoicing, payment gateways, insurance claims, GST compliance.
+- **Member 7 (Mobile/Portals, QA & Release)**: Patient/doctor portals, WebRTC teleconsultation, E2E testing, CI/CD.
 
 ---
 
-## 2. Pre-Configured Demo Personas (1-Click Switcher)
+## Member 2 Module Scope & Responsibilities
 
-The application includes a persistent top bar enabling instant 1-click switching between pre-seeded personas:
+The **Patient Management & Appointments** module is responsible for the foundational lifecycle of patient care:
 
-| Role | Username | Persona Name | Clinical Domain / Status |
-|---|---|---|---|
-| **Doctor** | `doctor_chen` | Dr. Sophia Chen, MD FACC | Senior Interventional Cardiologist (CareTrust Main) |
-| **Doctor** | `doctor_vance` | Dr. Marcus Vance, MD FCCP | Chief Pulmonologist & Critical Care (North Wing) |
-| **Patient** | `patient_priya` | Priya Sharma | Cardiac Patient (`MRN-2026-90412`, Penicillin Allergy) |
-| **Patient** | `patient_david` | David Miller | Chronic Pulmonology Patient (`MRN-2026-88104`) |
-| **Hospital Admin** | `hospital_admin` | Sarah Jenkins | Hospital System Administrator |
+1. **Master Patient Index (MPI) & Profiles**:
+   - Unique alphanumeric Medical Record Number (MRN) format per tenant.
+   - Comprehensive demographic, contact, and identification details.
+   - Algorithmic duplicate detection (Exact Match, Levenshtein Distance, Metaphone/Phonetic indexing).
+   - Safe merge workflows preserving historical audits and unmerge capabilities.
+2. **Scheduling & Availability Engine**:
+   - Doctor recurring schedules, special shifts, leave rules, and break buffers.
+   - Slot calculation engine avoiding cross-branch conflicts.
+   - High-concurrency booking mechanism with DB-level row locks (`select_for_update`) preventing race-condition double bookings.
+3. **Queue & Token Management (OPD)**:
+   - Walk-in tokens and scheduled tokens with prioritized queues.
+   - Real-time queue progression (Waiting -> In Consultation -> Completed / No-Show).
+4. **Inpatient Department (IPD) & Bed Allocation**:
+   - Ward, room, and bed state management (Available, Occupied, Cleaning, Maintenance).
+   - Admission orders, room transfers, nursing handovers, discharge clearance state machine.
+5. **Patient Portal & Notifications**:
+   - Patient self-service registration, appointment booking, and dispatching hooks.
 
 ---
 
-## 3. Quick Start & Local Execution
+## Technology Stack
 
-### Prerequisites
-- Python 3.10+ (Python 3.12 recommended)
-- Node.js v18+ and npm
+- **Backend**: Python 3.10+, Django 4.2+ / Django REST Framework, PostgreSQL.
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons.
+- **Testing**: `pytest`, `pytest-django`, Jest / React Testing Library.
+- **Documentation**: OpenAPI 3.0 / Swagger.
 
-### Option A: 1-Click Launch (Windows)
-Double-click `start.bat` or run:
-```powershell
-.\start.ps1
+---
+
+## Development Setup
+
+### Backend Setup
+```bash
+cd backend
+python -m venv venv
+# On Windows:
+.\venv\Scripts\activate
+# On Linux/macOS:
+source venv/bin/activate
+
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
 ```
 
-### Option B: Manual Setup
-
-#### 1. Backend Setup
+### Frontend Setup
 ```bash
-# Apply database migrations
-python backend/manage.py migrate
-
-# Seed realistic multi-tenant data
-python backend/seed_hms_data.py
-
-# Start Django development server
-python backend/manage.py runserver 127.0.0.1:8000
-```
-
-#### 2. Frontend Setup
-```bash
-# Navigate to frontend directory
 cd frontend
-
-# Start Vite development server
+npm install
 npm run dev
 ```
 
-Visit **`http://localhost:5173`** in your web browser!
-
----
-
-## 4. Automated Test Suite Execution
-
-Run all 16 tests covering multi-tenant isolation, RBAC security, patient portal filtering, doctor portal locking, telemedicine signaling, notifications, and E2E lifecycle:
-
-```bash
-python backend/manage.py test tests
-```
-
-**Output**:
-```
-Ran 16 tests in 0.884s
-OK
-```
-
----
-
-## 5. Security & Privacy Guarantees
-- **Multi-Tenant Scoping**: All records are logically isolated by tenant UUIDs.
-- **Suppression of Draft Lab Reports**: Unapproved diagnostic reports are strictly hidden from patient portal views.
-- **Signed Encounters Lock**: Finalized clinical notes cannot be edited without authorization.
-- **Zero Hardcoded Secrets**: Operates without any paid vendor API keys.
