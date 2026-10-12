@@ -59,3 +59,4 @@ class PatientMergeSerializer(serializers.Serializer):
     surviving_patient_id = serializers.UUIDField()
     subsumed_patient_id = serializers.UUIDField()
     reason = serializers.CharField(min_length=10)
+

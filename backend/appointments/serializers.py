@@ -58,3 +58,4 @@ class BookAppointmentSerializer(serializers.Serializer):
     end_time = serializers.TimeField()
     appointment_type = serializers.ChoiceField(choices=Appointment.TYPE_CHOICES, default="OPD")
     chief_complaint = serializers.CharField(required=False, allow_blank=True, default="")
+

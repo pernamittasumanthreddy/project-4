@@ -68,3 +68,4 @@ class TransferBedSerializer(serializers.Serializer):
     to_bed_id = serializers.UUIDField()
     reason = serializers.CharField()
     transferred_by_user_name = serializers.CharField(default="Ward Nurse")
+

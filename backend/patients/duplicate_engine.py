@@ -93,3 +93,4 @@ class PatientDuplicateEngine:
 
         candidates.sort(key=lambda x: x["confidence_score"], reverse=True)
         return candidates
+

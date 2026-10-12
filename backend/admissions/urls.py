@@ -9,3 +9,4 @@ router.register(r"admissions", AdmissionViewSet, basename="admission")
 urlpatterns = [
     path("", include(router.urls)),
 ]
+
