@@ -1,12 +1,13 @@
 """
-Settings for HMS Core backend.
+Settings for HMS Core backend (Integrated Multi-Tenant Platform).
+Combines Core, Patients, Appointments, Clinical, and Member 4 (LIS & RIS).
 """
 import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "hms-insecure-secret-key-development-2026")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "hms-member4-lab-radiology-secret-key-prod-ready-2026")
 
 DEBUG = True
 
@@ -22,14 +23,17 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "corsheaders",
-    "django_filters",
     "drf_spectacular",
-    # HMS Local Apps
+    # Teammate Apps
     "core",
     "patients",
     "appointments",
     "admissions",
     "clinical",
+    # Member 4 Apps (Laboratory & Radiology)
+    "contracts",
+    "lis",
+    "ris",
 ]
 
 MIDDLEWARE = [
@@ -42,6 +46,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "core.middleware.TenantHeaderMiddleware",
+    "contracts.middleware.TenantHeaderMiddleware",
 ]
 
 ROOT_URLCONF = "hms_core.urls"
@@ -49,7 +54,7 @@ ROOT_URLCONF = "hms_core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR.parent / "frontend"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -67,7 +72,7 @@ WSGI_APPLICATION = "hms_core.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": BASE_DIR / "db_hms_member4.sqlite3",
     }
 }
 
@@ -83,28 +88,40 @@ TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR.parent / "frontend",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+DICOM_STORAGE_ROOT = BASE_DIR.parent / "dicom_storage"
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+os.makedirs(DICOM_STORAGE_ROOT, exist_ok=True)
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend",
-        "rest_framework.filters.SearchFilter",
-        "rest_framework.filters.OrderingFilter",
-    ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    "PAGE_SIZE": 50,
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    ],
 }
 
-# Spectacular OpenAPI Documentation
+# OpenAPI Spectacular Documentation
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Hospital Management System (HMS) - Member 2 API",
-    "DESCRIPTION": "Master Patient Index (MPI), Appointments, Doctor Availability, OPD Queues, and IPD Bed Admissions.",
+    "TITLE": "HMS SaaS - Member 4: Laboratory & Radiology Module API",
+    "DESCRIPTION": "Production-grade Laboratory Information System (LIS) & Radiology Information System (RIS) with LOINC, DICOMweb, HL7/FHIR, Westgard QC.",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
