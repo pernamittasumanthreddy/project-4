@@ -2,7 +2,7 @@ name: Backend CI & QA Verification
 
 on:
   push:
-    branches: [ main, 'feature/**' ]
+    branches: [ main, 'feature/**', 'Member-**', 'member-**' ]
   pull_request:
     branches: [ main ]
 
