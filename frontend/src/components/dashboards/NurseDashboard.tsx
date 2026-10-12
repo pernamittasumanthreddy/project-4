@@ -82,43 +82,44 @@ export const NurseDashboard: React.FC<NurseDashboardProps> = ({
 
   return (
     <div className="space-y-6 text-slate-800">
-      {/* Top Clinical Header Bar */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Standard Compact Page Header */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-200 flex items-center gap-1">
-              <Heart className="w-3.5 h-3.5 text-teal-600" /> Nurse Station Telemetry
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
+              <Heart className="w-3.5 h-3.5 text-[#0F8B8D]" /> Unit 3A Telemetry Step-Down
             </span>
-            <span className="text-xs text-slate-500">Unit 3A Telemetry Step-Down • Floor 3</span>
+            <span className="text-xs text-slate-500">Charge Nurse • Sarah Jenkins, BSN, RN • Ratio 1:3</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Sarah Jenkins, BSN, RN (Charge Nurse)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Shift: <strong className="text-slate-900">Day (07:00 - 19:00)</strong> • Assigned Patients: 3 • Staffing Ratio: <strong className="text-emerald-700">1:3 (Compliant)</strong> • Active view: <span className="font-semibold text-teal-700 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Nurse Station Console</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Bedside telemetry, 5-rights medication administration records (MAR), and shift handover.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
-              {(['dashboard', 'console', 'vitals', 'meds', 'tasks'] as const).map(n => (
-                <button
-                  key={n}
-                  onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-teal-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {n === 'dashboard' ? 'Overview' : n === 'console' ? 'Telemetry & MEWS' : n === 'meds' ? 'Med Administration' : n}
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => setActiveNav('vitals')}
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+            >
+              Record Vitals
+            </button>
           )}
 
           <button
-            onClick={onOpenRAG}
-            className="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            onClick={() => setActiveNav ? setActiveNav('tasks') : null}
+            className="px-3.5 py-1.5 bg-[#0F8B8D] hover:bg-[#0B7476] text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
           >
-            <ShieldCheck className="w-3.5 h-3.5" /> Nursing SOP & Drug RAG
+            <CheckSquare className="w-3.5 h-3.5" /> Shift Handover
+          </button>
+
+          <button
+            onClick={onOpenRAG}
+            className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-[#0F8B8D] dark:bg-teal-950/60 rounded-lg text-xs font-semibold border border-teal-200 dark:border-teal-800 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Open Nursing SOP & Drug RAG"
+          >
+            <ShieldCheck className="w-3.5 h-3.5" /> Nursing SOPs
           </button>
         </div>
       </div>

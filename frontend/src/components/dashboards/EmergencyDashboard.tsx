@@ -35,50 +35,44 @@ export const EmergencyDashboard: React.FC<EmergencyDashboardProps> = ({
 
   return (
     <div className="space-y-6 text-slate-800">
-      {/* Top Operational Urgent Banner */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Standard Compact Page Header */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1">
-              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" /> EMERGENCY DEPARTMENT — Central Trauma Command
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" /> Emergency Department
             </span>
-            <span className="text-xs text-slate-500">Level 1 Trauma Center • Ground Floor Trauma Bay</span>
+            <span className="text-xs text-slate-500">Level 1 Trauma Center • Dr. Robert Thorne, MD, FACEP</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Dr. Robert Thorne, MD, FACEP (ED Director)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Active ED Load: <strong className="text-rose-700">3 Critical Patients</strong> • 2 Incoming Ambulances • 4 Resuscitation Beds Available • Active view: <span className="font-semibold text-rose-700 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Emergency & Trauma Command</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Real-time ESI level 1–5 triage queue, resuscitation bays, and ambulance arrivals.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
-              {(['dashboard', 'queue', 'codeblue'] as const).map(n => (
-                <button
-                  key={n}
-                  onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-rose-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  {n === 'dashboard' ? 'Overview' : n === 'queue' ? 'ESI Queue' : 'Code Blue'}
-                </button>
-              ))}
-            </div>
+            <button
+              onClick={() => setActiveNav('queue')}
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+            >
+              Triage Queue
+            </button>
           )}
 
           <button
             onClick={() => alert('Code Blue overhead broadcast initiated on Extension 4444! Crash Cart 1 & Trauma Bay Activated.')}
-            className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
           >
             <PhoneCall className="w-3.5 h-3.5" /> Code Blue (Ext 4444)
           </button>
 
           <button
             onClick={onOpenRAG}
-            className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Open Trauma Protocols RAG"
           >
-            <FileText className="w-3.5 h-3.5" /> Trauma SOP RAG
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-600" /> Trauma SOPs
           </button>
         </div>
       </div>

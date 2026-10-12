@@ -88,31 +88,31 @@ export const HRDashboard: React.FC<HRDashboardProps> = ({
   });
 
   return (
-    <div className="space-y-6 text-slate-800">
-      {/* Top Clinical Header Bar */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-6 text-[#1E293B] dark:text-[#E2E8F0]">
+      {/* Standard Compact Page Header (Section 3 Specification) */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1">
-              <Users className="w-3.5 h-3.5 text-rose-600" /> Healthcare Human Resources & Credentialing
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
+              <Users className="w-3.5 h-3.5" /> Medical Staff Office & Credentialing
             </span>
-            <span className="text-xs text-slate-500">Medical Staff Office • Executive Administration Floor 6</span>
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8]">Director of Human Capital • Eleanor Davis, SPHR</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Eleanor Davis, SPHR (Director of Human Capital)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Total Staff: <strong className="text-slate-900">248 Medical Professionals</strong> • Board Licensure Verification: <strong className="text-emerald-700">100% Current</strong> • Active view: <span className="font-semibold text-rose-700 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Healthcare HR & Staff Credentialing</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Medical staff roster, board licensure audits, shift coverage allocations, and leave requests.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+            <div className="hidden lg:flex bg-[#F4F7FA] dark:bg-slate-800 p-1 rounded-lg border border-[#DCE4EA] dark:border-slate-700 text-xs">
               {(['dashboard', 'roster', 'leave'] as const).map(n => (
                 <button
                   key={n}
                   onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-rose-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all cursor-pointer ${
+                    activeNav === n ? 'bg-white dark:bg-[#111827] text-[#0F8B8D] shadow-2xs' : 'text-[#64748B] dark:text-slate-300 hover:text-slate-900'
                   }`}
                 >
                   {n === 'dashboard' ? 'Overview' : n === 'roster' ? 'Staff Roster' : 'Leave & Shifts'}
@@ -123,9 +123,9 @@ export const HRDashboard: React.FC<HRDashboardProps> = ({
 
           <button
             onClick={onOpenRAG}
-            className="px-3.5 py-1.5 bg-rose-700 hover:bg-rose-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            className="px-3.5 py-1.5 bg-[#0F8B8D] hover:bg-[#0B7476] text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
           >
-            <FileText className="w-3.5 h-3.5" /> Staff Policies & HR RAG
+            <FileText className="w-3.5 h-3.5" /> Staff Policies RAG
           </button>
         </div>
       </div>

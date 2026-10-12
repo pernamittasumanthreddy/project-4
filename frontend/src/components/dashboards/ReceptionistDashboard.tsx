@@ -67,31 +67,31 @@ export const ReceptionistDashboard: React.FC<ReceptionistDashboardProps> = ({
   };
 
   return (
-    <div className="space-y-6 text-slate-800">
-      {/* Top Clinical Header Bar */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-6 text-[#1E293B] dark:text-[#E2E8F0]">
+      {/* Standard Compact Page Header (Section 3 Specification) */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
               <BadgeCheck className="w-3.5 h-3.5" /> Patient Intake & Front Desk
             </span>
-            <span className="text-xs text-slate-500">Central Ambulatory Pavilion • Main Entrance Reception</span>
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8]">Lead Intake Coordinator • Jessica Gomez</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Jessica Gomez (Lead Intake Coordinator)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Waiting Room: <strong className="text-slate-900">6 Patients</strong> • Avg Wait Time: <strong className="text-emerald-700">11 mins</strong> • Active view: <span className="font-semibold text-indigo-700 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Patient Access & Intake</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Front desk intake queue, outpatient tokens, walk-in registration, and visitor security passes.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+            <div className="hidden lg:flex bg-[#F4F7FA] dark:bg-slate-800 p-1 rounded-lg border border-[#DCE4EA] dark:border-slate-700 text-xs">
               {(['dashboard', 'appointments', 'visitors'] as const).map(n => (
                 <button
                   key={n}
                   onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-indigo-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all cursor-pointer ${
+                    activeNav === n ? 'bg-white dark:bg-[#111827] text-[#0F8B8D] shadow-2xs' : 'text-[#64748B] dark:text-slate-300 hover:text-slate-900'
                   }`}
                 >
                   {n === 'dashboard' ? 'Overview' : n}
@@ -101,10 +101,10 @@ export const ReceptionistDashboard: React.FC<ReceptionistDashboardProps> = ({
           )}
 
           <button
-            onClick={onOpenRAG}
-            className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            onClick={() => setIsRegisterOpen(true)}
+            className="px-3.5 py-1.5 bg-[#0F8B8D] hover:bg-[#0B7476] text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
           >
-            <FileText className="w-3.5 h-3.5" /> Admissions & Visiting SOP
+            <UserPlus className="w-3.5 h-3.5" /> Register Walk-In
           </button>
         </div>
       </div>
