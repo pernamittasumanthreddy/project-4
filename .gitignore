@@ -53,7 +53,8 @@ dist-ssr/
 .env.production.local
 
 # Storage
-dicom_storage/tmp/
+dicom_storage/*
+!dicom_storage/.gitkeep
 
 # IDE & OS
 .idea/
