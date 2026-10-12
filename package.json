@@ -1,0 +1,35 @@
+{
+  "name": "hospital-management-system-enterprise",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Enterprise Hospital Management System (HMS) with 15 clinical and administrative workstations, multi-tenant EMR, LIS, RIS PACS, and billing cycle",
+  "scripts": {
+    "start": "npm run start:frontend",
+    "start:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && python manage.py runserver 127.0.0.1:8000",
+    "build": "cd frontend && npm run build",
+    "test": "cd frontend && npm run test",
+    "test:backend": "cd backend && pytest",
+    "test:frontend": "cd frontend && npm run test",
+    "dev": "npm run start:frontend"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
+    "tailwind-merge": "^2.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
+  }
+}

@@ -69,58 +69,131 @@ The platform is structured into modular domains maintained collaboratively by th
 
 ---
 
-## Quick Start & Local Execution
+## Dependencies
 
-### 1. Automated 1-Click Launch (Windows)
+The platform requires Python 3.10+ and Node.js 18+ (or Docker).
 
-Run the included launcher script:
-```powershell
-.\start.ps1
+- **Backend Dependencies**: Listed in [`requirements.txt`](file:///requirements.txt)
+  - `Django>=4.2`
+  - `djangorestframework>=3.14`
+  - `django-cors-headers>=4.0`
+  - `pydicom>=2.4.0`
+  - `reportlab>=4.0.0`
+  - `pytest>=7.4`
+  - `pytest-django>=4.5`
+- **Frontend Dependencies**: Listed in [`package.json`](file:///package.json) and locked in [`package-lock.json`](file:///package-lock.json)
+  - `react>=18.2.0`, `react-dom>=18.2.0`
+  - `lucide-react`, `recharts`
+  - `vite>=6.0`, `typescript>=5.0`, `tailwindcss>=3.4`
+
+---
+
+## Installation
+
+### 1. Environment Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/pernamittasumanthreddy/project-4.git
+cd project-4
+
+# Setup Python Virtual Environment
+python -m venv venv
+source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+
+# Install Python backend dependencies
+pip install -r requirements.txt
+
+# Install Node frontend dependencies
+npm install
+cd frontend && npm install && cd ..
 ```
-Or with batch file:
-```cmd
-start.bat
-```
 
-This automatically:
-1. Applies all database migrations across all member apps.
-2. Seeds initial multi-tenant test data and clinical records.
-3. Launches the Django REST API backend on `http://127.0.0.1:8000`.
-4. Starts the Vite Frontend Portal on `http://localhost:5173`.
+### 2. Database Migrations & Initial Seed
 
-### 2. Manual Launch Steps
-
-#### Backend
-```cmd
+```bash
 cd backend
 python manage.py migrate
 python seed_hms_data.py
-python manage.py runserver 127.0.0.1:8000
+cd ..
 ```
-- Interactive Swagger UI: [http://127.0.0.1:8000/api/docs/](http://127.0.0.1:8000/api/docs/)
-- ReDoc API Documentation: [http://127.0.0.1:8000/api/redoc/](http://127.0.0.1:8000/api/redoc/)
-- Member 4 LIS/RIS Console: [http://127.0.0.1:8000/lis-ris/](http://127.0.0.1:8000/lis-ris/)
 
-#### Frontend Portal
-```cmd
+---
+
+## Build
+
+### Build Frontend Production Assets
+```bash
+# Using root npm command
+npm run build
+
+# Or directly in frontend
 cd frontend
-npm install
-npm run dev
+npm run build
+cd ..
 ```
-- Open in browser: [http://localhost:5173](http://localhost:5173)
+
+### Build Docker Container
+```bash
+docker build -t hms-enterprise:latest .
+```
+
+---
+
+## Run
+
+### Option A: 1-Click Launch (Recommended)
+- **Windows PowerShell**:
+  ```powershell
+  .\start.ps1
+  ```
+- **Windows Command Prompt**:
+  ```cmd
+  start.bat
+  ```
+- **Python Unified Runner**:
+  ```bash
+  python main.py
+  ```
+- **Docker Compose**:
+  ```bash
+  docker compose up -d
+  ```
+
+### Option B: Manual Multi-Service Run
+1. **Start Django Backend (Port 8000)**:
+   ```bash
+   cd backend
+   python manage.py runserver 127.0.0.1:8000
+   ```
+2. **Start Vite Frontend Portal (Port 5173)**:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+---
+
+## Usage
+
+1. **Enterprise Portal Web UI**: Navigate to [http://localhost:5173](http://localhost:5173).
+   - Use the 15-role quick login selector to access any medical workstation (*Attending Physician*, *Nurse Console*, *Emergency Command*, *Pharmacy Workstation*, *Pathology LIS*, *Radiology PACS*, etc.).
+2. **REST API & Swagger Documentation**: [http://127.0.0.1:8000/api/docs/](http://127.0.0.1:8000/api/docs/)
+3. **ReDoc Interactive Reference**: [http://127.0.0.1:8000/api/redoc/](http://127.0.0.1:8000/api/redoc/)
+4. **PACS / DICOM Diagnostic Viewer**: [http://127.0.0.1:8000/lis-ris/](http://127.0.0.1:8000/lis-ris/)
 
 ---
 
 ## Running Automated Tests
 
-Run the full cross-domain backend test suite:
-```cmd
-cd backend
-pytest -v
-```
+- **Run all backend Django tests**:
+  ```bash
+  cd backend
+  pytest -v
+  ```
+- **Run all frontend clinical and RAG evaluation tests**:
+  ```bash
+  cd frontend
+  npm run test
+  ```
 
-Run Member 4 LIS/RIS automated test suite:
-```cmd
-cd backend
-pytest tests/test_member4_lis_ris.py -v
-```
