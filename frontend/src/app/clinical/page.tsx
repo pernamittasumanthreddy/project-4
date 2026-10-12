@@ -2,9 +2,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Stethoscope, Activity, FileText, Database, 
-  ShieldCheck, ArrowRight, ExternalLink, Pill, 
-  Flame, Lock, HeartHandshake, BookOpen
+  Stethoscope, Activity, FileText, 
+  ShieldCheck, ArrowRight, ExternalLink 
 } from 'lucide-react';
 
 export default function ClinicalPortalPage() {
@@ -46,13 +45,13 @@ export default function ClinicalPortalPage() {
       <main className="flex-1 max-w-6xl mx-auto w-full p-6 md:p-8 space-y-8">
         <div className="bg-gradient-to-r from-blue-700 via-indigo-700 to-sky-700 rounded-2xl p-8 text-white shadow-lg space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-white text-xs font-semibold backdrop-blur-xs">
-            <ShieldCheck className="w-3.5 h-3.5" /> Module 3: Clinical Management & EMR/EHR (1.56 Lakh LOC)
+            <ShieldCheck className="w-3.5 h-3.5" /> Clinical Management & EMR/EHR Workstation
           </div>
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Production Clinical & EMR/EHR Workstation
+            Integrated Clinical & EMR/EHR Workspace
           </h2>
           <p className="text-blue-100 text-sm max-w-2xl leading-relaxed">
-            Genuine healthcare workflows: SOAP consultations, cryptographic digital signatures, immutable clinical charts, automated MEWS vitals telemetry, 5-rights bedside eMAR, and over 1,30,000 lines of WHO ICD-10 & safety registries.
+            Professional healthcare workflows: structured SOAP consultations, cryptographic digital signatures, immutable clinical records, automated MEWS vitals telemetry, 5-rights bedside eMAR, and master WHO ICD-10 registries.
           </p>
         </div>
 
@@ -128,50 +127,6 @@ export default function ClinicalPortalPage() {
             </div>
           </Link>
 
-        </div>
-
-        {/* Member 3 Clinical Architecture & Technical Stack */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-              <Database className="w-4 h-4 text-blue-600" /> Member 3 Clinical Infrastructure & APIs
-            </h3>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
-              Live on localhost
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-              <div className="text-xs font-bold text-slate-900 dark:text-white">ICD-10 Registry</div>
-              <div className="text-[11px] text-slate-500">2,250 Diagnostic Codes</div>
-              <div className="text-[10px] font-mono text-blue-600 font-semibold">49,530 lines of code</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-              <div className="text-xs font-bold text-slate-900 dark:text-white">Drug Safety Engine</div>
-              <div className="text-[11px] text-slate-500">1,200 Interaction Rules</div>
-              <div className="text-[10px] font-mono text-blue-600 font-semibold">21,631 lines of code</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-              <div className="text-xs font-bold text-slate-900 dark:text-white">Clinical Templates</div>
-              <div className="text-[11px] text-slate-500">600 Specialty Note Forms</div>
-              <div className="text-[10px] font-mono text-blue-600 font-semibold">18,632 lines of code</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 space-y-1">
-              <div className="text-xs font-bold text-slate-900 dark:text-white">NANDA-I Care Plans</div>
-              <div className="text-[11px] text-slate-500">600 Evidence Care Plans</div>
-              <div className="text-[10px] font-mono text-blue-600 font-semibold">16,824 lines of code</div>
-            </div>
-          </div>
-
-          <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">
-            <span>Branch: <code className="text-blue-600 font-semibold">member3-work</code></span>
-            <span>Total Staged Code: <strong className="text-slate-900 dark:text-white font-bold">1,56,291 Lines</strong></span>
-            <span>Test Suites: <strong className="text-emerald-600 font-bold">100% Passing (36/36 tests)</strong></span>
-          </div>
         </div>
       </main>
     </div>
