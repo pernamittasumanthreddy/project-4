@@ -57,3 +57,4 @@ class PatientMergeRollbackService:
             "restored_patient_id": str(subsumed_patient.id),
             "restored_mrn": subsumed_patient.mrn,
         }
+

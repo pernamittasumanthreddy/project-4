@@ -105,3 +105,4 @@ with open(os.path.join(DATA_DIR, "ipd_admission_records.json"), "w", encoding="u
     json.dump(admissions, f, indent=2)
 
 print("IPD admission records written.")
+

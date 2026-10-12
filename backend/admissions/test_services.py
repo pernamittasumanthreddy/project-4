@@ -28,3 +28,4 @@ def test_bed_occupancy_summary_and_cleaning_release():
     assert res["status"] == "AVAILABLE"
     bed3.refresh_from_db()
     assert bed3.status == "AVAILABLE"
+

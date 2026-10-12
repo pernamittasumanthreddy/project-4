@@ -31,3 +31,4 @@ with open(os.path.join(DATA_DIR, "encounter_clinical_notes.json"), "w", encoding
     json.dump(encounters, f, indent=2)
 
 print("Clinical encounter records generated.")
+
