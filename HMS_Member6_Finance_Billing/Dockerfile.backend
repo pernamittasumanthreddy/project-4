@@ -1,0 +1,29 @@
+# Multi-Stage Dockerfile for Member 6 Django Backend
+FROM python:3.13-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY backend/ /app/backend/
+COPY pytest.ini /app/
+
+RUN pip install --no-cache-dir \
+    django \
+    djangorestframework \
+    django-cors-headers \
+    drf-spectacular \
+    pytest \
+    pytest-django \
+    gunicorn
+
+EXPOSE 8000
+
+CMD ["python", "backend/manage.py", "runserver", "0.0.0.0:8000"]
