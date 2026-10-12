@@ -60,8 +60,8 @@ const ALL_ROLES: { role: HospitalRole; label: string; desc: string }[] = [
 ];
 
 export const HospitalShell: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [portalView, setPortalView] = useState<'home' | 'login'>('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [portalView, setPortalView] = useState<'home' | 'login'>('login');
   const [currentRole, setCurrentRole] = useState<HospitalRole>('DOCTOR');
   const [currentUser, setCurrentUser] = useState<UserProfile>(DEMO_USERS['DOCTOR']);
   const [activeNav, setActiveNav] = useState('dashboard');
@@ -105,27 +105,18 @@ export const HospitalShell: React.FC = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setPortalView('home');
+    setPortalView('login');
   };
 
   const handleSelectPatientFromAnywhere = (patient: Patient) => {
     setSelectedPatientForEMR(patient);
   };
 
-  // If not logged in, show the Welcome Home Page or the 15-Role Workstation Gateway
+  // If not logged in, show the 15-Role Workstation Login Gateway
   if (!isLoggedIn) {
-    if (portalView === 'home') {
-      return (
-        <HospitalHomePage 
-          onOpenLogins={() => setPortalView('login')} 
-          onQuickLogin={(role) => handleLoginFromPortal(role)}
-        />
-      );
-    }
     return (
       <HospitalLoginPortal 
         onLogin={handleLoginFromPortal} 
-        onBackToHome={() => setPortalView('home')} 
       />
     );
   }
