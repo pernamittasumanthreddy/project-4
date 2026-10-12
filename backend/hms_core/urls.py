@@ -4,7 +4,9 @@ Provides unified routing for all 7 platform member modules.
 """
 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.generic import TemplateView
+from django.views.static import serve
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -65,6 +67,10 @@ urlpatterns = [
     path('api/v1/doctor-portal/', include('apps.doctor_portal.urls')),
     path('api/v1/telemedicine/', include('apps.telemedicine.urls')),
     path('api/v1/notifications/', include('apps.notifications.urls')),
+
+    # Frontend Single Page Application routing (Production bundle)
+    re_path(r'^assets/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR.parent / 'frontend' / 'dist' / 'assets'}),
+    re_path(r'^(?!api|admin).*$', TemplateView.as_view(template_name='index.html'), name='frontend-spa'),
 ]
 
 if settings.DEBUG:
