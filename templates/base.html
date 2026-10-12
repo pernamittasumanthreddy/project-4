@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title|default:"Pharmacy & Inventory" }}{% endblock %} — HMS</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+    <style>
+
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --primary-light: #e0f2fe;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --sidebar-width: 260px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+        .sidebar-brand {
+            padding: 20px 24px;
+            font-size: 18px;
+            font-weight: 700;
+            border-bottom: 1px solid #1e293b;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-tenant {
+            padding: 12px 24px;
+            background-color: #1e293b;
+            font-size: 12px;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+        }
+        .sidebar-tenant strong { color: #f8fafc; }
+        .sidebar-menu {
+            list-style: none;
+            padding: 16px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 24px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: #1e293b;
+            color: #38bdf8;
+            border-left: 4px solid #38bdf8;
+        }
+        .sidebar-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #1e293b;
+            font-size: 12px;
+            color: #64748b;
+        }
+        /* Main Layout */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .topbar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topbar-title { font-size: 20px; font-weight: 700; color: var(--text-main); }
+        .topbar-actions { display: flex; align-items: center; gap: 16px; }
+        .content-area {
+            padding: 32px;
+            flex: 1;
+        }
+        /* Components */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .card-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-outline { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background-color: var(--bg-body); }
+        .btn-sm { padding: 4px 10px; font-size: 12px; }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-success { background-color: var(--success-light); color: var(--success); }
+        .badge-warning { background-color: var(--warning-light); color: var(--warning); }
+        .badge-danger { background-color: var(--danger-light); color: var(--danger); }
+        .badge-info { background-color: var(--primary-light); color: var(--primary); }
+        /* Tables */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-main); }
+        tr:hover td { background-color: #f1f5f9; }
+        /* Grid */
+        .grid-kpi {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .kpi-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
+        .kpi-value { font-size: 26px; font-weight: 700; color: var(--text-main); }
+        .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span>🏥</span> HMS Core Pharmacy
+        </div>
+        <div class="sidebar-tenant">
+            Organization: <strong>{{ current_tenant.name|default:"Apex General Hospital" }}</strong><br>
+            Branch: <strong>{{ current_branch.name|default:"Central Facility" }}</strong>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'pharmacy_dashboard' %}">📊 Overview Dashboard</a></li>
+            <li><a href="{% url 'pharmacy_catalogue' %}">💊 Medicine Catalogue</a></li>
+            <li><a href="{% url 'pharmacy_batches' %}">📦 Batches & Expiry (FEFO)</a></li>
+            <li><a href="{% url 'pharmacy_dispensing' %}">📝 Prescription Dispensing</a></li>
+            <li><a href="{% url 'pharmacy_purchasing' %}">🛒 Purchase Orders & GRN</a></li>
+            <li><a href="{% url 'pharmacy_returns' %}">⚠️ Returns & Quarantine</a></li>
+            <li><a href="{% url 'pharmacy_reconciliation' %}">📋 Stock Reconciliation</a></li>
+            <li><a href="{% url 'pharmacy_reports' %}">📈 Reports & Exports</a></li>
+            <li><a href="/admin/" target="_blank">⚙️ Admin Console</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            HMS SaaS Platform v1.0.0<br>
+            Multi-Tenant Isolation Active
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <header class="topbar">
+            <h1 class="topbar-title">{{ page_title|default:"Pharmacy Management" }}</h1>
+            <div class="topbar-actions">
+                <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 12px; border-radius: 6px; font-size: 13px;">
+                    <span style="color: #64748b;">User:</span>
+                    <strong style="color: #0284c7;">{{ request.user.username|default:"pharmacist" }}</strong>
+                    <span class="badge badge-info" style="font-size: 11px;">{{ request.user.role|default:"PHARMACIST" }}</span>
+                    <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+                    <span style="color: #64748b; font-size: 11px;">Switch Role:</span>
+                    <a href="/api/auth/switch/pharmacist/?next={{ request.path }}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 11px; text-decoration: none;">Pharmacist</a>
+                    <a href="/api/auth/switch/inventory_mgr/?next={{ request.path }}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 11px; text-decoration: none;">Inventory Mgr</a>
+                    <a href="/api/auth/switch/admin/?next={{ request.path }}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 11px; text-decoration: none;">Admin</a>
+                    <a href="/api/auth/switch/doctor/?next={{ request.path }}" class="btn btn-outline btn-sm" style="padding: 2px 7px; font-size: 11px; text-decoration: none;">Doctor</a>
+                </div>
+                <a href="/api/pharmacy/" target="_blank" class="btn btn-outline btn-sm">🔌 REST API Docs</a>
+            </div>
+        </header>
+
+
+        <main class="content-area">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="card" style="background-color: var(--primary-light); color: var(--primary-dark); padding: 12px 16px; margin-bottom: 16px;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
