@@ -3,3 +3,4 @@ __pycache__/
 *$py.class
 *.sqlite3
 .pytest_cache/
+dicom_storage/
