@@ -60,7 +60,7 @@ const ALL_ROLES: { role: HospitalRole; label: string; desc: string }[] = [
 ];
 
 export const HospitalShell: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [portalView, setPortalView] = useState<'home' | 'login'>('home');
   const [currentRole, setCurrentRole] = useState<HospitalRole>('DOCTOR');
   const [currentUser, setCurrentUser] = useState<UserProfile>(DEMO_USERS['DOCTOR']);
@@ -378,6 +378,41 @@ export const HospitalShell: React.FC = () => {
             </button>
           </div>
         </header>
+
+        {/* Quick Role Switcher Strip for Easy Testing */}
+        <div className="bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 px-6 py-2 flex items-center gap-2 overflow-x-auto text-xs shrink-0">
+          <span className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider shrink-0 mr-1">Workstations:</span>
+          {[
+            { role: 'DOCTOR', label: '🩺 Doctor' },
+            { role: 'NURSE', label: '👩‍⚕️ Nurse' },
+            { role: 'PATIENT', label: '👤 Patient' },
+            { role: 'LABORATORY_STAFF', label: '🔬 Laboratory' },
+            { role: 'RADIOLOGY_STAFF', label: '🩻 Radiology' },
+            { role: 'PHARMACIST', label: '💊 Pharmacy' },
+            { role: 'BILLING_STAFF', label: '💳 Billing' },
+            { role: 'EMERGENCY_STAFF', label: '🚑 Emergency' },
+            { role: 'RECEPTIONIST', label: '📋 Reception' },
+            { role: 'HOSPITAL_ADMIN', label: '🏢 Admin' },
+          ].map(item => (
+            <button
+              key={item.role}
+              onClick={() => handleRoleChange(item.role as any)}
+              className={`px-3 py-1 rounded-full font-medium transition-all shrink-0 cursor-pointer ${
+                currentRole === item.role
+                  ? 'bg-blue-600 text-white shadow-xs font-bold'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 border border-slate-200/80 dark:border-slate-600'
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            className="ml-auto px-3 py-1 rounded-full font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 shrink-0 cursor-pointer"
+          >
+            🌐 Landing Page
+          </button>
+        </div>
 
         {/* Dynamic Role Dashboard Body */}
         <main className="flex-1 overflow-y-auto p-6">

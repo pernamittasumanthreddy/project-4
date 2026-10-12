@@ -98,4 +98,15 @@ urlpatterns = [
         "document_root": settings.BASE_DIR.parent / "frontend",
         "path": "member4_lis_ris.html",
     }),
+
+    # Assets & Dist Files
+    re_path(r"^assets/(?P<path>.*)$", serve, {
+        "document_root": settings.BASE_DIR.parent / "frontend" / "dist" / "assets",
+    }),
+
+    # Frontend Single-Page App (SPA) Root & Fallback on Port 8000
+    re_path(r"^(?!api|admin|static|media|dicom).*$", serve, {
+        "document_root": settings.BASE_DIR.parent / "frontend" / "dist",
+        "path": "index.html",
+    }),
 ]

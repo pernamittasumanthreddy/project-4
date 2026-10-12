@@ -91,6 +91,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [
+    BASE_DIR.parent / "frontend" / "dist",
     BASE_DIR.parent / "frontend",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
