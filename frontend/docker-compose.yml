@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  hms-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hms-enterprise-platform
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://hms_admin:SecurePass123%21@hms-db:5432/hms_enterprise
+      - JWT_SECRET=c6a8f34190b24e8da618fb99581a0e05912a76cd1f114098ad8e
+      - HOSPITAL_ID=HOSP-01
+    depends_on:
+      - hms-db
+
+  hms-db:
+    image: pgvector/pgvector:pg16
+    container_name: hms-enterprise-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=hms_admin
+      - POSTGRES_PASSWORD=SecurePass123!
+      - POSTGRES_DB=hms_enterprise
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  pgdata:
+    driver: local
