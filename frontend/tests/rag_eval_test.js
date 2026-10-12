@@ -3,7 +3,7 @@
  * Validates RBAC isolation, 0% hallucination fallback, and medical safety rules.
  */
 
-const assert = require('assert');
+import assert from 'assert';
 
 async function runTestSuite() {
   console.log('================================================================');
