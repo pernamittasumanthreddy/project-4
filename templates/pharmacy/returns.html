@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Quarantined Stock Holding & Returns Area</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                Quarantined items are physically isolated and strictly prohibited from dispensing until approved inspection.
+            </p>
+        </div>
+        <span class="badge badge-warning">{{ quarantines.count }} Active Hold Cases</span>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th>Batch #</th>
+                    <th>Quarantined Quantity</th>
+                    <th>Origin Source</th>
+                    <th>Reason</th>
+                    <th>Date Held</th>
+                    <th>Resolution Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in quarantines %}
+                <tr>
+                    <td><strong>{{ q.medicine.brand_name }}</strong><br><small>{{ q.medicine.strength }}</small></td>
+                    <td><code>{{ q.batch.batch_number }}</code></td>
+                    <td><strong style="color: var(--danger);">{{ q.quantity }}</strong></td>
+                    <td><span class="badge badge-info">{{ q.source }}</span></td>
+                    <td>{{ q.reason }}</td>
+                    <td><small>{{ q.created_at|date:"Y-m-d H:i" }}</small></td>
+                    <td>
+                        <span class="badge badge-warning">Pending Inspection</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        No stock currently in quarantine holding.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

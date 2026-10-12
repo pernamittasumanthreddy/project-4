@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Prescriptions Awaiting Dispensation (Clinical Queue)</h2>
+        <span class="badge badge-info">{{ prescriptions.count }} orders awaiting review</span>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Prescription #</th>
+                    <th>Patient</th>
+                    <th>Prescribing Physician</th>
+                    <th>Prescribed Items</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rx in prescriptions %}
+                <tr>
+                    <td><strong>{{ rx.prescription_number }}</strong><br><small>{{ rx.created_at|date:"M d, Y H:i" }}</small></td>
+                    <td>
+                        <strong>{{ rx.patient.full_name }}</strong><br>
+                        <small style="color: var(--text-muted);">MRN: {{ rx.patient.mrn }} | Gender: {{ rx.patient.gender }}</small>
+                    </td>
+                    <td>Dr. {{ rx.prescriber.get_full_name|default:rx.prescriber.username }}</td>
+                    <td>
+                        <ul style="list-style: none; padding-left: 0; font-size: 12px;">
+                            {% for item in rx.items.all %}
+                            <li>
+                                💊 <strong>{{ item.medicine_name }}</strong> — {{ item.quantity_prescribed }} prescribed
+                                (Remaining: <strong>{{ item.remaining_quantity }}</strong>)
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td><span class="badge badge-warning">{{ rx.get_status_display }}</span></td>
+                    <td>
+                        <form method="POST" action="/api/pharmacy/dispensations/" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="prescription_id" value="{{ rx.id }}">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="dispenseRx('{{ rx.id }}', '{{ rx.prescription_number }}')">
+                                Dispense FEFO
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        No pending clinical prescriptions in queue.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Recent Dispensation History -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Recent Dispensation History</h2>
+    </div>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Receipt #</th>
+                    <th>Prescription</th>
+                    <th>Patient</th>
+                    <th>Pharmacist</th>
+                    <th>Total Amount</th>
+                    <th>Billing Invoice</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in recent_dispensations %}
+                <tr>
+                    <td><code>{{ d.dispense_number }}</code></td>
+                    <td>{{ d.prescription.prescription_number }}</td>
+                    <td>{{ d.prescription.patient.full_name }}</td>
+                    <td>{{ d.pharmacist.username }}</td>
+                    <td><strong>${{ d.total_amount }}</strong></td>
+                    <td>
+                        {% if d.billing_invoice_id %}
+                            <span class="badge badge-success">Billed</span>
+                        {% else %}
+                            <span class="badge badge-info">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td><small>{{ d.created_at|date:"Y-m-d H:i" }}</small></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                        No past dispensations recorded.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function dispenseRx(rxId, rxNum) {
+    if (confirm("Fulfill prescription #" + rxNum + " using automated FEFO batch allocation?")) {
+        fetch('/api/pharmacy/dispensations/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ prescription_id: rxId })
+        })
+        .then(async res => {
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+                alert("Prescription fulfilled successfully! Dispense #" + (data.data ? data.data.dispense_number : ''));
+                window.location.reload();
+            } else {
+                const msg = data.message || data.error || data.detail || (res.status === 403 ? "Permission notice: Dispensing requires Pharmacist or Admin role. Please switch role in topbar." : "Error dispensing: " + JSON.stringify(data));
+                alert(msg);
+            }
+        })
+        .catch(err => alert("Network error: " + err));
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Physical Stock Counting & Reconciliation Sessions</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                Audits physical shelf stock against system records. Variances require supervisor approval prior to ledger adjustment.
+            </p>
+        </div>
+        <span class="badge badge-info">{{ sessions.count }} Total Audit Sessions</span>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Audit Session #</th>
+                    <th>Location</th>
+                    <th>Initiated By</th>
+                    <th>Status</th>
+                    <th>Total Variance Value</th>
+                    <th>Approved By</th>
+                    <th>Started Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sessions %}
+                <tr>
+                    <td><strong>{{ s.session_number }}</strong></td>
+                    <td>{{ s.storage_location.name|default:"Main Pharmacy" }}</td>
+                    <td>{{ s.initiated_by.username }}</td>
+                    <td>
+                        {% if s.status == 'IN_PROGRESS' %}<span class="badge badge-warning">Counting In Progress</span>
+                        {% elif s.status == 'SUBMITTED' %}<span class="badge badge-info">Submitted for Approval</span>
+                        {% elif s.status == 'APPROVED' %}<span class="badge badge-success">Approved & Adjusted</span>
+                        {% else %}<span class="badge">{{ s.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong style="color: {% if s.total_discrepancy_value < 0 %}var(--danger){% elif s.total_discrepancy_value > 0 %}var(--success){% else %}var(--text-main){% endif %};">
+                            ${{ s.total_discrepancy_value }}
+                        </strong>
+                    </td>
+                    <td>{{ s.approved_by.username|default:"Pending" }}</td>
+                    <td><small>{{ s.created_at|date:"Y-m-d H:i" }}</small></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        No physical stock count sessions recorded yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

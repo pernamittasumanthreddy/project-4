@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Hospital Medicine Catalogue (Formulary)</h2>
+        <form method="GET" action="{% url 'pharmacy_catalogue' %}" style="display: flex; gap: 8px;">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Search brand or generic name..." 
+                   style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; width: 280px;">
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+            {% if search_query %}
+                <a href="{% url 'pharmacy_catalogue' %}" class="btn btn-outline btn-sm">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Code / SKU</th>
+                    <th>Brand Name</th>
+                    <th>Generic Name</th>
+                    <th>Strength</th>
+                    <th>Dosage Form</th>
+                    <th>Classification</th>
+                    <th>Current Stock</th>
+                    <th>Reorder Level</th>
+                    <th>Unit Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in medicines %}
+                <tr>
+                    <td><code>{{ med.code }}</code></td>
+                    <td><strong>{{ med.brand_name }}</strong></td>
+                    <td>{{ med.generic_name }}</td>
+                    <td>{{ med.strength }}</td>
+                    <td><span class="badge badge-info">{{ med.get_dosage_form_display }}</span></td>
+                    <td><small>{{ med.get_classification_display }}</small></td>
+                    <td>
+                        <strong style="font-size: 14px; color: {% if med.stock_level <= 0 %}var(--danger){% elif med.low_stock %}var(--warning){% else %}var(--success){% endif %};">
+                            {{ med.stock_level|floatformat:0 }} {{ med.dispensing_unit }}s
+                        </strong>
+                    </td>
+                    <td>{{ med.reorder_level|floatformat:0 }}</td>
+                    <td>${{ med.unit_price }}</td>
+                    <td>
+                        {% if med.stock_level <= 0 %}
+                            <span class="badge badge-danger">Out of Stock</span>
+                        {% elif med.low_stock %}
+                            <span class="badge badge-warning">Low Stock</span>
+                        {% else %}
+                            <span class="badge badge-success">Optimal</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                        No medicines found matching criteria.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

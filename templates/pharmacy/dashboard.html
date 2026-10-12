@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Real Dynamic Alert KPI Cards -->
+<div class="grid-kpi">
+    <div class="kpi-card" style="border-left: 4px solid var(--danger);">
+        <div class="kpi-title">Expired Batches</div>
+        <div class="kpi-value" style="color: var(--danger);">{{ alerts.expired_batches_count }}</div>
+        <div class="kpi-sub">Strictly blocked from dispensing</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--warning);">
+        <div class="kpi-title">Near-Expiry (&le; 60 Days)</div>
+        <div class="kpi-value" style="color: var(--warning);">{{ alerts.near_expiry_batches_count }}</div>
+        <div class="kpi-sub">Priority for FEFO utilization</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--warning);">
+        <div class="kpi-title">Low Stock Medicines</div>
+        <div class="kpi-value" style="color: var(--warning);">{{ alerts.low_stock_count }}</div>
+        <div class="kpi-sub">{{ alerts.out_of_stock_count }} completely out of stock</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--primary);">
+        <div class="kpi-title">Pending Prescriptions</div>
+        <div class="kpi-value" style="color: var(--primary);">{{ alerts.pending_prescriptions_count }}</div>
+        <div class="kpi-sub">Awaiting pharmacist fulfillment</div>
+    </div>
+    <div class="kpi-card" style="border-left: 4px solid var(--success);">
+        <div class="kpi-title">Inventory Valuation</div>
+        <div class="kpi-value">${{ valuation.total_purchase_cost_value|floatformat:2 }}</div>
+        <div class="kpi-sub">{{ valuation.total_units_on_hand|floatformat:0 }} units across {{ valuation.total_batches_count }} batches</div>
+    </div>
+</div>
+
+<!-- Fast Action Toolbar -->
+<div class="card" style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+    <div style="font-size: 14px; font-weight: 600;">Operational Shortcuts:</div>
+    <div style="display: flex; gap: 12px;">
+        <a href="{% url 'pharmacy_dispensing' %}" class="btn btn-primary">📝 Dispense Prescription</a>
+        <a href="{% url 'pharmacy_purchasing' %}" class="btn btn-outline">🛒 New Purchase Order</a>
+        <a href="{% url 'pharmacy_batches' %}" class="btn btn-outline">📦 View FEFO Batches</a>
+        <a href="{% url 'pharmacy_reports' %}" class="btn btn-outline">📈 Audit Reports</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <!-- Pending Clinical Prescriptions -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Pending Clinical Prescriptions</h2>
+            <a href="{% url 'pharmacy_dispensing' %}" class="btn btn-outline btn-sm">View All Queue</a>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rx #</th>
+                        <th>Patient</th>
+                        <th>Prescribed By</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rx in pending_prescriptions %}
+                    <tr>
+                        <td><strong>{{ rx.prescription_number }}</strong></td>
+                        <td>{{ rx.patient.full_name }}<br><small style="color: var(--text-muted);">{{ rx.patient.mrn }}</small></td>
+                        <td>Dr. {{ rx.prescriber.get_full_name|default:rx.prescriber.username }}</td>
+                        <td><span class="badge badge-warning">{{ rx.get_status_display }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                            No pending clinical prescriptions in queue.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Recent Auditable Stock Movements -->
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Recent Stock Ledger Entries</h2>
+            <a href="{% url 'pharmacy_batches' %}" class="btn btn-outline btn-sm">Full Ledger</a>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Medicine</th>
+                        <th>Type</th>
+                        <th>Quantity Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in recent_movements %}
+                    <tr>
+                        <td><small>{{ m.created_at|date:"M d, H:i" }}</small></td>
+                        <td>{{ m.medicine.brand_name }}<br><small style="color: var(--text-muted);">Batch {{ m.batch.batch_number }}</small></td>
+                        <td><span class="badge badge-info">{{ m.get_movement_type_display }}</span></td>
+                        <td style="font-weight: 700; color: {% if m.quantity_change > 0 %}var(--success){% else %}var(--danger){% endif %};">
+                            {% if m.quantity_change > 0 %}+{% endif %}{{ m.quantity_change }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">
+                            No stock transactions recorded yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
