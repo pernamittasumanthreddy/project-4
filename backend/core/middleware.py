@@ -22,8 +22,11 @@ class TenantHeaderMiddleware:
         elif tenant_slug:
             request.tenant = Tenant.objects.filter(slug=tenant_slug, is_active=True).first()
         else:
-            # Fallback for development if no header provided
-            request.tenant = Tenant.objects.filter(is_active=True).first()
+            # Fallback for development if no header provided: select tenant with seeded clinical data
+            request.tenant = (
+                Tenant.objects.filter(slug="caretrust-health", is_active=True).first()
+                or Tenant.objects.filter(is_active=True).first()
+            )
 
         response = self.get_response(request)
         return response
