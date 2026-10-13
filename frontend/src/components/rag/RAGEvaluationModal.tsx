@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { RAGEvaluationMetrics } from '@/lib/types/rag';
+import { RAGEngine } from '@/lib/rag/ragEngine';
 import { X, Award, CheckCircle2, ShieldAlert, Cpu, Database, Activity, RefreshCw } from 'lucide-react';
 
 interface RAGEvaluationModalProps {
@@ -15,8 +16,8 @@ export const RAGEvaluationModal: React.FC<RAGEvaluationModalProps> = ({ isOpen, 
   const fetchMetrics = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/rag/evaluate');
-      const data = await res.json();
+      const ragEngine = RAGEngine.getInstance();
+      const data = ragEngine.getEvaluator().getMetrics();
       setMetrics(data);
     } catch (e) {
       console.error('Failed to load metrics', e);

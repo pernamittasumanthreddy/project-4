@@ -25,6 +25,7 @@ from ris.views import (
     ImagingOrderViewSet, ModalityWorklistView, ImagingStudyViewSet,
     RadiologyReportViewSet, DICOMWebView
 )
+from clinical.rag_views import RAGQueryAPIView, RAGEvaluateAPIView
 
 router = DefaultRouter()
 # Contracts
@@ -78,6 +79,12 @@ urlpatterns = [
 
     # Member 3 Modules: Clinical Management & EMR
     path("api/clinical/", include("clinical.urls")),
+
+    # Enterprise Multi-RAG Clinical Knowledge Assistant (Member 3)
+    path("api/rag/query", RAGQueryAPIView.as_view(), name="rag-query"),
+    path("api/rag/query/", RAGQueryAPIView.as_view(), name="rag-query-slash"),
+    path("api/rag/evaluate", RAGEvaluateAPIView.as_view(), name="rag-evaluate"),
+    path("api/rag/evaluate/", RAGEvaluateAPIView.as_view(), name="rag-evaluate-slash"),
 
     # Member 4 Modules: Custom Dashboard & Analytics Endpoints
     path("api/contracts/summary/", TeamContractsSummaryView.as_view(), name="contracts-summary"),
