@@ -16,6 +16,8 @@ from clinical.views import (
     ClinicalTemplateViewSet,
 )
 
+from clinical.rag_views import RAGQueryAPIView, RAGEvaluateAPIView
+
 router = DefaultRouter()
 router.register(r"encounters", ClinicalEncounterViewSet, basename="clinical-encounter")
 router.register(r"diagnoses", ClinicalDiagnosisViewSet, basename="clinical-diagnosis")
@@ -31,5 +33,9 @@ router.register(r"referrals", ClinicalReferralViewSet, basename="clinical-referr
 router.register(r"templates", ClinicalTemplateViewSet, basename="clinical-template")
 
 urlpatterns = [
+    path("rag/query", RAGQueryAPIView.as_view(), name="clinical-rag-query"),
+    path("rag/query/", RAGQueryAPIView.as_view(), name="clinical-rag-query-slash"),
+    path("rag/evaluate", RAGEvaluateAPIView.as_view(), name="clinical-rag-evaluate"),
+    path("rag/evaluate/", RAGEvaluateAPIView.as_view(), name="clinical-rag-evaluate-slash"),
     path("", include(router.urls)),
 ]
