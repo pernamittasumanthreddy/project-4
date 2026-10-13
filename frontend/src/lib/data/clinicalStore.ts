@@ -540,7 +540,7 @@ class ClinicalStore {
     const current = this.dischargeSummaries[index];
     const timestamp = new Date().toISOString();
     const signature = generateSignatureHash(
-      `DISCHARGE-FINAL|${current.patientMrn}|${doctorName}|${doctorLicense}|${timestamp}`
+      `DISCHARGE-FINAL|${current.mrn}|${doctorName}|${doctorLicense}|${timestamp}`
     );
 
     const signedSummary: DischargeSummary = {

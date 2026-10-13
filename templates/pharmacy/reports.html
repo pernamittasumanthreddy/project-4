@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <div>
+            <h2 class="card-title">Inventory Valuation & Compliance Audits</h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                Exportable audit reports calculated from persisted stock records.
+            </p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/api/pharmacy/reports/?export=csv" class="btn btn-outline">
+                📥 Export Stock CSV
+            </a>
+            <a href="/api/pharmacy/reports/?export=pdf" class="btn btn-primary">
+                📄 Download Official Audit PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Valuation Breakdown -->
+    <div class="grid-kpi" style="margin-top: 16px;">
+        <div class="kpi-card" style="border-left: 4px solid var(--primary);">
+            <div class="kpi-title">Total Active Batches</div>
+            <div class="kpi-value">{{ valuation.total_batches_count }}</div>
+            <div class="kpi-sub">Distinct lot records</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid var(--primary);">
+            <div class="kpi-title">Units On Hand</div>
+            <div class="kpi-value">{{ valuation.total_units_on_hand|floatformat:0 }}</div>
+            <div class="kpi-sub">Total dispensing units</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid var(--success);">
+            <div class="kpi-title">Total Cost Valuation</div>
+            <div class="kpi-value">${{ valuation.total_purchase_cost_value|floatformat:2 }}</div>
+            <div class="kpi-sub">Acquisition inventory value</div>
+        </div>
+        <div class="kpi-card" style="border-left: 4px solid var(--success);">
+            <div class="kpi-title">Potential Retail Value</div>
+            <div class="kpi-value">${{ valuation.total_retail_value|floatformat:2 }}</div>
+            <div class="kpi-sub">Margin: ${{ valuation.potential_margin_value|floatformat:2 }}</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 24px; padding: 20px; background-color: #f8fafc; border-radius: 8px; border: 1px solid var(--border);">
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Audit & Export Integrity Notice:</h3>
+        <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+            All financial totals and batch valuations are strictly derived from persistent database tables with FIFO/FEFO accounting.
+            Reports are scoped to your authenticated organization (<strong>{{ current_tenant.name }}</strong>) and facility branch.
+            Cross-tenant data exposure is prevented at the database and query layer.
+        </p>
+    </div>
+</div>
+{% endblock %}

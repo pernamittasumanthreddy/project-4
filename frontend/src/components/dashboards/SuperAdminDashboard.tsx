@@ -6,45 +6,57 @@ import {
   ShieldCheck, Server, Key, AlertOctagon, Users, 
   Building2, Database, Lock, Eye, RefreshCw, Settings, 
   Activity, DollarSign, Calendar, Bed, Flame, AlertCircle, 
-  CheckCircle2, FileText, ArrowUpRight, Clock 
+  CheckCircle2, FileText, ArrowUpRight, Clock,
+  LogOut,
 } from 'lucide-react';
 import { INITIAL_AUDIT_LOGS } from '@/lib/data/mockDatabase';
 
 interface SuperAdminDashboardProps {
+  onLogout?: () => void;
   activeNav?: string;
   setActiveNav?: (nav: string) => void;
 }
 
-export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({ 
+export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
+  onLogout, 
   activeNav = 'dashboard',
   setActiveNav 
 }) => {
   return (
-    <div className="space-y-6 text-slate-800">
-      {/* Top Clinical Header Bar */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-6 text-[#1E293B] dark:text-[#E2E8F0]">
+      {/* Standard Compact Page Header (Section 3 Specification) */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200 flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5 text-purple-600" /> Super Admin Cluster Governance
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 dark:text-rose-300 rounded-lg text-xs font-semibold border border-rose-200 dark:border-rose-800 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              title="Log Out of Workstation"
+            >
+              <LogOut className="w-3.5 h-3.5" /> Log Out
+            </button>
+          )}
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5" /> Cluster Super Admin Governance
             </span>
-            <span className="text-xs text-slate-500">Global Infrastructure & Enterprise Security Controller</span>
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8]">Cluster CTO • Alexander Sterling</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Alexander Sterling (Cluster Chief Technology Officer)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Multi-Tenant Cluster: <strong className="text-slate-900">4 Hospitals Active</strong> • 15 RBAC Roles • Cryptographic Audit Chain Valid • Active view: <span className="font-semibold text-purple-700 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Cluster Super Admin Governance</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Multi-tenant hospital network infrastructure, cryptographic audit logs, and global RBAC security.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+            <div className="hidden lg:flex bg-[#F4F7FA] dark:bg-slate-800 p-1 rounded-lg border border-[#DCE4EA] dark:border-slate-700 text-xs">
               {(['dashboard', 'tenants', 'rbac', 'audit', 'settings'] as const).map(n => (
                 <button
                   key={n}
                   onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-purple-700 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all cursor-pointer ${
+                    activeNav === n ? 'bg-white dark:bg-[#111827] text-[#0F8B8D] shadow-2xs' : 'text-[#64748B] dark:text-slate-300 hover:text-slate-900'
                   }`}
                 >
                   {n === 'dashboard' ? 'Overview' : n === 'tenants' ? 'Tenants' : n === 'rbac' ? 'RBAC Matrix' : n === 'audit' ? 'Audit Stream' : 'Settings'}
@@ -53,9 +65,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
             </div>
           )}
 
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-semibold">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-lg text-xs font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>All Cluster Nodes Healthy</span>
+            <span>Cluster Healthy (4 Nodes)</span>
           </div>
         </div>
       </div>
