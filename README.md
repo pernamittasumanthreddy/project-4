@@ -184,6 +184,43 @@ docker build -t hms-enterprise:latest .
 
 ---
 
+## Multi-Role Grounded RAG Clinical Assistant (Member 3)
+
+The platform embeds an **on-premise, zero-hallucination Retrieval-Augmented Generation (RAG)** clinical knowledge assistant available across all 15 hospital dashboards:
+
+- **Hybrid Retrieval Architecture**: Combines **BM25 lexical search** with **Semantic Vector Embeddings** through **Reciprocal Rank Fusion (RRF)**.
+- **Strict Role-Based Access Control (RBAC)**: Enforces document scope isolation (e.g. ICU Sepsis protocols for clinicians, Formulary SOPs for pharmacists, Pre-authorization rules for billing, and privacy guidelines for patients).
+- **0% Hallucination Policy & Diagnostic Guardrails**: Rejects unverified medical claims and intercepts autonomous diagnostic/prescribing attempts with clinical advisories directing users to licensed providers.
+- **Dual Execution Engine**:
+  - **In-Browser Client Execution**: Instantaneous local retrieval (~10ms) with zero cloud network dependencies.
+  - **Django REST API Endpoints**: Available at `/api/rag/query` and `/api/rag/evaluate` for external interoperability and automated test suites.
+
+---
+
+## 15 Role Workstations & Perspectives
+
+Every hospital role has a dedicated workstation dashboard with customized clinical/operational tools and dedicated Logout buttons:
+
+| # | Role Workstation | Primary User | Department Scope | Key Tools & Actions |
+|---|---|---|---|---|
+| 1 | **Doctor Workstation** | Dr. Marcus Vance, MD | Cardiology / IPD | SOAP consultations, EMR timeline, e-prescribing, CDS calculators, SHA-256 note locking |
+| 2 | **Nursing Station** | Sarah Jenkins, RN | Intensive Care (ICU) | Bedside vitals, MEWS deterioration alerts, fluid balance flowsheet, eMAR 5-rights verification |
+| 3 | **Emergency Command** | Dr. Robert Thorne, MD | Trauma Bay / ED | Manchester Triage System (MTS) Red/Orange triage, Code Blue/STEMI triggers, rapid transfer |
+| 4 | **Hospital Administrator** | Dr. Arthur Pendelton | Administration | Hospital census, bed occupancy tracking, visitor protocols, incident management |
+| 5 | **Super Admin** | Alexander Sterling | Governance | Multi-tenant isolation, cross-hospital branches, user credentialing, security audit logs |
+| 6 | **Patient Portal** | Eleanor Vance | Inpatient / Outpatient | Health records, validated lab results, appointments, prescription refill requests |
+| 7 | **Pharmacist Station** | Samuel Miller, RPh | Pharmacy Services | High-alert double checks, generic substitutions, narcotic logs, dispensing approval |
+| 8 | **Laboratory Console** | Dr. Karen White, MD | Pathology & LIS | Specimen accessioning, LOINC test catalog, panic critical value readback (<30 min rule) |
+| 9 | **Radiology & PACS** | Dr. Jonathan Blake, MD | Diagnostic Imaging | Modality worklist (CT/MRI/X-Ray), DICOMweb PS3.18 viewer, contrast eGFR clearance check |
+| 10 | **Billing & Finance** | Claire Henderson | Revenue Cycle | Itemized billing, procedural fee schedules, GST invoices, deposit reconciliation |
+| 11 | **Insurance & TPA** | Michael Chang | Claims & Insurance | EDI 278 pre-authorizations, EDI 837 claims submission, denial appeal tracking |
+| 12 | **Human Resources** | Eleanor Davis | HR & Credentialing | Physician/nurse board licensing, BLS/ACLS renewals, mandatory annual compliance |
+| 13 | **Department Manager** | Dr. Anthony Rossi | Surgical Tower | Operating theatre schedules, surgical staff rosters, equipment allocation |
+| 14 | **Management Executive** | Victoria Sterling | Executive Board | High-level clinical quality metrics, bed utilization analytics, hospital revenue KPI |
+| 15 | **Compliance Officer** | Jonathan Hayes | Compliance & Legal | HIPAA access audit trails, chart snooping detection, regulatory inspection reports |
+
+---
+
 ## Running Automated Tests
 
 - **Run all backend Django tests**:
@@ -191,9 +228,19 @@ docker build -t hms-enterprise:latest .
   cd backend
   pytest -v
   ```
-- **Run all frontend clinical and RAG evaluation tests**:
+- **Run all frontend automated test suites** (Clinical EMR & Multi-RAG Benchmarks):
   ```bash
   cd frontend
   npm run test
+  ```
+- **Run dedicated RAG benchmark evaluation test**:
+  ```bash
+  cd frontend
+  npm run test:rag
+  ```
+- **Run clinical management EMR test**:
+  ```bash
+  cd frontend
+  npm run test:clinical
   ```
 
