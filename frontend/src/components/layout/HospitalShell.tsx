@@ -129,9 +129,9 @@ export const HospitalShell: React.FC = () => {
   const renderDashboard = () => {
     switch (currentRole) {
       case 'SUPER_ADMIN':
-        return <SuperAdminDashboard activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <SuperAdminDashboard activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'HOSPITAL_ADMIN':
-        return <HospitalAdminDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <HospitalAdminDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'DOCTOR':
         return (
           <DoctorDashboard 
@@ -140,6 +140,7 @@ export const HospitalShell: React.FC = () => {
             activeNav={activeNav} 
             setActiveNav={setActiveNav}
             onSelectPatient={handleSelectPatientFromAnywhere}
+            onLogout={handleLogout}
           />
         );
       case 'NURSE':
@@ -150,26 +151,27 @@ export const HospitalShell: React.FC = () => {
             activeNav={activeNav} 
             setActiveNav={setActiveNav}
             onSelectPatient={handleSelectPatientFromAnywhere}
+            onLogout={handleLogout}
           />
         );
       case 'PATIENT':
-        return <PatientDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <PatientDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'PHARMACIST':
-        return <PharmacistDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <PharmacistDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'LABORATORY_STAFF':
-        return <LaboratoryDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <LaboratoryDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'RADIOLOGY_STAFF':
-        return <RadiologyDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <RadiologyDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'BILLING_STAFF':
-        return <BillingDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <BillingDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'INSURANCE_STAFF':
-        return <InsuranceDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <InsuranceDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'HR_STAFF':
-        return <HRDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <HRDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'DEPARTMENT_MANAGER':
-        return <DepartmentManagerDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <DepartmentManagerDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'MANAGEMENT_EXECUTIVE':
-        return <ManagementExecutiveDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} />;
+        return <ManagementExecutiveDashboard onOpenRAG={() => setIsRAGOpen(true)} onOpenDoc={setSelectedDoc} activeNav={activeNav} setActiveNav={setActiveNav} onLogout={handleLogout} />;
       case 'EMERGENCY_STAFF':
         return (
           <EmergencyDashboard 
@@ -178,6 +180,7 @@ export const HospitalShell: React.FC = () => {
             activeNav={activeNav} 
             setActiveNav={setActiveNav} 
             onSelectPatient={handleSelectPatientFromAnywhere}
+            onLogout={handleLogout}
           />
         );
       case 'RECEPTIONIST':
@@ -189,6 +192,7 @@ export const HospitalShell: React.FC = () => {
             activeNav={activeNav} 
             setActiveNav={setActiveNav} 
             onSelectPatient={handleSelectPatientFromAnywhere}
+            onLogout={handleLogout}
           />
         );
     }
@@ -233,6 +237,7 @@ export const HospitalShell: React.FC = () => {
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         currentUser={currentUser}
+        onLogout={handleLogout}
       />
 
       {/* Main Container */}

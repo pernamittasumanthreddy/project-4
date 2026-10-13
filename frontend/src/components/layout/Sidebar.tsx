@@ -6,7 +6,7 @@ import {
   FlaskConical, Scan, CreditCard, ShieldCheck, 
   Building2, Activity, Heart, Award, FileText, 
   Flame, BookOpen, Clock, Settings, Bell, Lock, 
-  ChevronLeft, ChevronRight, Stethoscope, Sparkles 
+  ChevronLeft, ChevronRight, Stethoscope, Sparkles, LogOut 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -21,6 +21,7 @@ interface SidebarProps {
     department: string;
     employeeId?: string;
   };
+  onLogout?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -30,6 +31,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeNav,
   setActiveNav,
   currentUser,
+  onLogout,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -255,6 +257,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <div className="text-[10px] text-[#D7E6EE]/75 truncate leading-tight">{currentUser.department}</div>
               </div>
             )}
+          </div>
+        )}
+
+        {onLogout && (
+          <div className="p-2 border-b border-[#0B2C3D]">
+            <button
+              onClick={onLogout}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 transition-all cursor-pointer ${
+                collapsed ? 'justify-center px-0' : ''
+              }`}
+              title="Log Out of Session"
+            >
+              <LogOut className="w-3.5 h-3.5 shrink-0 text-rose-400" />
+              {!collapsed && <span>Log Out</span>}
+            </button>
           </div>
         )}
 

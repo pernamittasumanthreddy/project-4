@@ -5,12 +5,14 @@ import { StatusBadge } from '../shared/StatusBadge';
 import { 
   Users, Calendar, UserCheck, Building, Clock, 
   Search, CheckCircle2, FileText, BadgeCheck, Plus, 
-  UserPlus, CreditCard, Printer, ShieldCheck, Ticket 
+  UserPlus, CreditCard, Printer, ShieldCheck, Ticket,
+  LogOut,
 } from 'lucide-react';
 import { SEED_PATIENTS } from '@/lib/data/mockDatabase';
 import { Patient } from '@/lib/types/hms';
 
 interface ReceptionistDashboardProps {
+  onLogout?: () => void;
   onOpenRAG: () => void;
   onOpenDoc: (doc: any) => void;
   activeNav?: string;
@@ -18,7 +20,8 @@ interface ReceptionistDashboardProps {
   onSelectPatient?: (patient: Patient) => void;
 }
 
-export const ReceptionistDashboard: React.FC<ReceptionistDashboardProps> = ({ 
+export const ReceptionistDashboard: React.FC<ReceptionistDashboardProps> = ({
+  onLogout, 
   onOpenRAG, 
   onOpenDoc,
   activeNav = 'dashboard',
@@ -72,6 +75,15 @@ export const ReceptionistDashboard: React.FC<ReceptionistDashboardProps> = ({
       <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 dark:text-rose-300 rounded-lg text-xs font-semibold border border-rose-200 dark:border-rose-800 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              title="Log Out of Workstation"
+            >
+              <LogOut className="w-3.5 h-3.5" /> Log Out
+            </button>
+          )}
             <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
               <BadgeCheck className="w-3.5 h-3.5" /> Patient Intake & Front Desk
             </span>
