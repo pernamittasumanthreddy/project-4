@@ -5,18 +5,21 @@ import { StatusBadge } from '../shared/StatusBadge';
 import { 
   Scan, ShieldCheck, Activity, Eye, FileText, 
   Clock, AlertCircle, Sparkles, CheckCircle2, 
-  Search, Plus, Check, ArrowUpRight, Share2 
+  Search, Plus, Check, ArrowUpRight, Share2,
+  LogOut,
 } from 'lucide-react';
 import { SAMPLE_RADIOLOGY_SCANS } from '@/lib/data/mockDatabase';
 
 interface RadiologyDashboardProps {
+  onLogout?: () => void;
   onOpenRAG: () => void;
   onOpenDoc: (doc: any) => void;
   activeNav?: string;
   setActiveNav?: (nav: string) => void;
 }
 
-export const RadiologyDashboard: React.FC<RadiologyDashboardProps> = ({ 
+export const RadiologyDashboard: React.FC<RadiologyDashboardProps> = ({
+  onLogout, 
   onOpenRAG, 
   onOpenDoc,
   activeNav = 'dashboard',
@@ -37,31 +40,40 @@ export const RadiologyDashboard: React.FC<RadiologyDashboardProps> = ({
   });
 
   return (
-    <div className="space-y-6 text-slate-800">
-      {/* Top Clinical Header Bar */}
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-6 text-[#1E293B] dark:text-[#E2E8F0]">
+      {/* Standard Compact Page Header (Section 3 Specification) */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl p-5 border border-[#DCE4EA] dark:border-[#293548] shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-violet-50 text-violet-800 border border-violet-200 flex items-center gap-1">
-              <Scan className="w-3.5 h-3.5 text-violet-600" /> Department of Diagnostic Imaging & PACS
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 dark:text-rose-300 rounded-lg text-xs font-semibold border border-rose-200 dark:border-rose-800 flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              title="Log Out of Workstation"
+            >
+              <LogOut className="w-3.5 h-3.5" /> Log Out
+            </button>
+          )}
+            <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-teal-50 text-[#0F8B8D] border border-teal-200 flex items-center gap-1">
+              <Scan className="w-3.5 h-3.5" /> Department of Diagnostic Imaging & PACS
             </span>
-            <span className="text-xs text-slate-500">CT 128-Slice • 3.0T MRI • Digital Radiography • Basement L1</span>
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8]">Section Chief • Dr. Jonathan Blake, MD</span>
           </div>
-          <h1 className="text-xl font-bold mt-1 text-slate-900">Dr. Jonathan Blake, MD (Section Chief, Diagnostic Radiology)</h1>
-          <p className="text-xs text-slate-600 mt-0.5">
-            Studies Completed Today: <strong className="text-slate-900">38 Scans</strong> • Unread STATs: <strong className="text-rose-700">1 Urgent CT</strong> • Active view: <span className="font-semibold text-violet-800 capitalize">{activeNav}</span>
+          <h1 className="text-xl font-bold mt-1 text-[#1E293B] dark:text-white tracking-tight">Diagnostic Imaging & PACS</h1>
+          <p className="text-xs text-[#64748B] dark:text-[#A8B4C7] mt-0.5">
+            Cross-sectional CT/MRI modalities, DICOM telemetry, and rapid trauma reporting.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {setActiveNav && (
-            <div className="hidden lg:flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+            <div className="hidden lg:flex bg-[#F4F7FA] dark:bg-slate-800 p-1 rounded-lg border border-[#DCE4EA] dark:border-slate-700 text-xs">
               {(['dashboard', 'scans', 'safety'] as const).map(n => (
                 <button
                   key={n}
                   onClick={() => setActiveNav(n)}
-                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all ${
-                    activeNav === n ? 'bg-white text-violet-800 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                  className={`px-2.5 py-1 rounded-md font-semibold capitalize transition-all cursor-pointer ${
+                    activeNav === n ? 'bg-white dark:bg-[#111827] text-[#0F8B8D] shadow-2xs' : 'text-[#64748B] dark:text-slate-300 hover:text-slate-900'
                   }`}
                 >
                   {n === 'dashboard' ? 'Overview' : n === 'scans' ? 'Modality Queue' : 'Contrast & Safety'}
@@ -72,9 +84,9 @@ export const RadiologyDashboard: React.FC<RadiologyDashboardProps> = ({
 
           <button
             onClick={onOpenRAG}
-            className="px-3.5 py-1.5 bg-violet-700 hover:bg-violet-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors"
+            className="px-3.5 py-1.5 bg-[#0F8B8D] hover:bg-[#0B7476] text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
           >
-            <FileText className="w-3.5 h-3.5" /> Imaging Protocols & Contrast RAG
+            <FileText className="w-3.5 h-3.5" /> Contrast & Protocols RAG
           </button>
         </div>
       </div>

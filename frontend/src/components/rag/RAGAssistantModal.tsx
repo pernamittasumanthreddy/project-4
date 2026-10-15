@@ -5,6 +5,7 @@ import { ROLE_CONFIGS } from '@/lib/data/roleConfigs';
 import { RAGQueryResult, Citation, HospitalDocument } from '@/lib/types/rag';
 import { DocumentViewerModal } from './DocumentViewerModal';
 import { HOSPITAL_DOCUMENTS } from '@/lib/data/hospitalDocuments';
+import { RAGEngine } from '@/lib/rag/ragEngine';
 import { 
   X, Send, Sparkles, BookOpen, ShieldCheck, CheckCircle2, 
   ExternalLink, ThumbsUp, ThumbsDown, Clock, AlertTriangle, 
@@ -34,20 +35,22 @@ export const RAGAssistantModal: React.FC<RAGAssistantModalProps> = ({ isOpen, on
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selectedDocToView, setSelectedDocToView] = useState<HospitalDocument | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const previousRoleRef = useRef<string>(currentUser.role);
 
-  // Initialize role-specific welcome message when opened
+  // Initialize or update role-specific welcome message when opened or role changes
   useEffect(() => {
-    if (messages.length === 0) {
+    if (previousRoleRef.current !== currentUser.role || messages.length === 0) {
+      previousRoleRef.current = currentUser.role;
       setMessages([
         {
-          id: 'msg-welcome',
+          id: `msg-welcome-${currentUser.role}-${Date.now()}`,
           sender: 'assistant',
           text: `Welcome, ${currentUser.name}. I am your dedicated **${roleConfig.ragTitle}**.\n\nI provide strictly verified answers grounded in CityCare's approved clinical protocols, departmental SOPs, formulary guidelines, and administrative policies authorized for **${currentUser.department}**.\n\n*Clinical Safety Guardrail: I do not autonomously diagnose patients or prescribe medications.*`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]);
     }
-  }, [currentUser, roleConfig, messages.length]);
+  }, [currentUser, roleConfig]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -70,17 +73,9 @@ export const RAGAssistantModal: React.FC<RAGAssistantModalProps> = ({ isOpen, on
     setLoading(true);
 
     try {
-      const res = await fetch('/api/rag/query', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: query,
-          role: currentUser.role,
-          userId: currentUser.id
-        })
-      });
-
-      const data: RAGQueryResult = await res.json();
+      // Execute multi-factor hybrid RAG (BM25 + Semantic Vector Store + RBAC Filter)
+      const ragEngine = RAGEngine.getInstance();
+      const data: RAGQueryResult = await ragEngine.query(currentUser, query);
 
       const assistantMsg: MessageHistoryItem = {
         id: `asst-${Date.now()}`,
@@ -93,6 +88,7 @@ export const RAGAssistantModal: React.FC<RAGAssistantModalProps> = ({ isOpen, on
 
       setMessages(prev => [...prev, assistantMsg]);
     } catch (e) {
+      console.error('RAG assistant execution error:', e);
       setMessages(prev => [
         ...prev,
         {

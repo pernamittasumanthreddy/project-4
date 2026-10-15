@@ -1,4 +1,5 @@
 import { DepartmentType, HospitalRole } from './roles';
+export type { DepartmentType, HospitalRole };
 
 /**
  * CLINICAL ENCOUNTER TYPES

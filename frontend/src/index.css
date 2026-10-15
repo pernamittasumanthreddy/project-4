@@ -1,25 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ==========================================================================
    CARETRUST HEALTHCARE ENTERPRISE SAAS DESIGN SYSTEM
    Professional Medical UI/UX - Accessible Contrast - Responsive Layouts
    ========================================================================== */
 
 :root {
+  /* Global Medical Color Palette (Master Specification) */
+  --primary: #123B52;
+  --primary-hover: #0B2C3D;
+  --secondary: #0F8B8D;
+  --secondary-hover: #0B7476;
+
+  --background: #F4F7FA;
+  --surface: #FFFFFF;
+  --surface-muted: #EAF0F4;
+
+  --text-primary: #1E293B;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+
+  --border: #DCE4EA;
+  --success: #16A34A;
+  --success-bg: #DCFCE7;
+
+  --warning: #D97706;
+  --warning-bg: #FEF3C7;
+
+  --danger: #DC2626;
+  --danger-bg: #FEE2E2;
+
+  --info: #2563EB;
+  --info-bg: #DBEAFE;
+
+  --sidebar-bg: #123B52;
+  --sidebar-text: #D7E6EE;
+  --sidebar-active: #0F8B8D;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+
   /* Brand Healthcare Colors */
-  --color-primary: #0D9488;         /* Clinical Teal */
-  --color-primary-dark: #0F766E;
+  --color-primary: #0F8B8D;         /* Clinical Teal */
+  --color-primary-dark: #0B7476;
   --color-primary-light: #F0FDFA;
   --color-primary-border: #99F6E4;
 
-  --color-accent: #0284C7;          /* Medical Blue/Cyan */
-  --color-accent-dark: #0369A1;
+  --color-accent: #123B52;          /* Deep Navy */
+  --color-accent-dark: #0B2C3D;
   --color-accent-light: #F0F9FF;
 
-  --color-success: #059669;         /* Health Green */
-  --color-success-light: #ECFDF5;
+  --color-success: #16A34A;         /* Health Green */
+  --color-success-light: #DCFCE7;
   --color-warning: #D97706;         /* Amber Alert */
-  --color-warning-light: #FFFBEB;
-  --color-danger: #E11D48;          /* Critical Rose */
-  --color-danger-light: #FFF1F2;
+  --color-warning-light: #FEF3C7;
+  --color-danger: #DC2626;          /* Critical Red */
+  --color-danger-light: #FEE2E2;
 
   /* Neutrals & Slate */
   --slate-900: #0F172A;
@@ -29,26 +71,14 @@
   --slate-500: #64748B;
   --slate-400: #94A3B8;
   --slate-300: #CBD5E1;
-  --slate-200: #E2E8F0;
-  --slate-100: #F1F5F9;
-  --slate-50: #F8FAFC;
+  --slate-200: #DCE4EA;
+  --slate-100: #EAF0F4;
+  --slate-50: #F4F7FA;
   --surface-white: #FFFFFF;
 
   /* Typography */
   --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  
-  /* Shadows & Elevation */
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-
-  /* Borders & Radius */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
-  --border-light: 1px solid var(--slate-200);
+  --border-light: 1px solid var(--border);
 }
 
 * {

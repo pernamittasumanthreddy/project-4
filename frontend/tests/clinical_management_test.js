@@ -6,7 +6,7 @@
  * ==============================================================================
  */
 
-const assert = require('assert');
+import assert from 'assert';
 
 // Cryptographic hash simulation matching clinicalStore
 function generateSignatureHash(dataString) {

@@ -6,7 +6,7 @@ import {
   FlaskConical, Scan, CreditCard, ShieldCheck, 
   Building2, Activity, Heart, Award, FileText, 
   Flame, BookOpen, Clock, Settings, Bell, Lock, 
-  ChevronLeft, ChevronRight, Stethoscope, Sparkles 
+  ChevronLeft, ChevronRight, Stethoscope, Sparkles, LogOut 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -15,6 +15,13 @@ interface SidebarProps {
   onOpenEval: () => void;
   activeNav: string;
   setActiveNav: (nav: string) => void;
+  currentUser?: {
+    name: string;
+    role: HospitalRole;
+    department: string;
+    employeeId?: string;
+  };
+  onLogout?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -22,7 +29,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenRAG,
   onOpenEval,
   activeNav,
-  setActiveNav
+  setActiveNav,
+  currentUser,
+  onLogout,
 }) => {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -140,15 +149,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className={`bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none text-slate-300 transition-all duration-200 ${
+      className={`bg-[#123B52] border-r border-[#0B2C3D] flex flex-col justify-between shrink-0 select-none text-[#D7E6EE] transition-all duration-200 ${
         collapsed ? 'w-18' : 'w-64'
       }`}
     >
       {/* Brand Header */}
       <div>
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between gap-3">
+        <div className="p-4 border-b border-[#0B2C3D] flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs font-bold text-base shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-[#0F8B8D] flex items-center justify-center text-white shadow-xs font-bold text-base shrink-0">
               +
             </div>
             {!collapsed && (
@@ -156,7 +165,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <h1 className="text-xs font-bold text-white tracking-tight leading-tight truncate">
                   CityCare Hospital
                 </h1>
-                <span className="text-[10px] text-blue-400 font-semibold block leading-tight truncate">
+                <span className="text-[10px] text-[#0F8B8D] font-semibold block leading-tight truncate">
                   Central Campus
                 </span>
               </div>
@@ -165,7 +174,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded-md transition-colors"
+            className="p-1 text-[#D7E6EE]/70 hover:text-white hover:bg-[#0B2C3D] rounded-md transition-colors"
             title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -175,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Navigation list */}
         <div className="p-2.5 space-y-1">
           {!collapsed && (
-            <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+            <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-[#D7E6EE]/60 tracking-wider">
               Clinical Workspace
             </div>
           )}
@@ -189,8 +198,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 title={collapsed ? item.label : undefined}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+                    ? 'bg-[#0F8B8D] text-white shadow-xs'
+                    : 'text-[#D7E6EE] hover:text-white hover:bg-[#0B2C3D]'
                 } ${collapsed ? 'justify-center px-0' : ''}`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -201,9 +210,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Dedicated Hospital Intelligence Section */}
-        <div className="p-2.5 pt-1 space-y-1 border-t border-slate-800/80 mt-2">
+        <div className="p-2.5 pt-1 space-y-1 border-t border-[#0B2C3D] mt-2">
           {!collapsed && (
-            <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+            <div className="px-2.5 py-1 text-[10px] uppercase font-bold text-[#D7E6EE]/60 tracking-wider">
               Clinical Intelligence
             </div>
           )}
@@ -211,18 +220,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onOpenRAG}
             title={collapsed ? 'Role RAG Assistant' : undefined}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold bg-blue-950/70 text-blue-300 hover:bg-blue-900/80 border border-blue-800/60 transition-all ${
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-bold bg-[#0B2C3D] text-[#0F8B8D] hover:bg-[#082230] border border-[#0F8B8D]/40 transition-all ${
               collapsed ? 'justify-center px-0' : ''
             }`}
           >
-            <Sparkles className="w-4 h-4 shrink-0 text-blue-400" />
+            <Sparkles className="w-4 h-4 shrink-0 text-[#0F8B8D]" />
             {!collapsed && <span className="truncate">Clinical Knowledge RAG</span>}
           </button>
 
           <button
             onClick={onOpenEval}
             title={collapsed ? 'RAG Quality Benchmark' : undefined}
-            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition-all ${
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium text-[#D7E6EE] hover:text-white hover:bg-[#0B2C3D] transition-all ${
               collapsed ? 'justify-center px-0' : ''
             }`}
           >
@@ -232,17 +241,51 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Footer Security Badge */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/60 text-[11px] text-slate-400">
-        <div className={`flex items-center gap-1.5 text-emerald-400 font-semibold mb-0.5 ${collapsed ? 'justify-center' : ''}`}>
-          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-          {!collapsed && <span>HIPAA Certified</span>}
-        </div>
-        {!collapsed && (
-          <p className="text-[10px] leading-tight text-slate-400">
-            Multi-Tenant Isolation • AES-256
-          </p>
+      {/* Footer: Current User Profile + Security Badge */}
+      <div className="border-t border-[#0B2C3D] bg-[#0B2C3D]/60 text-[11px] text-[#D7E6EE]">
+        {currentUser && (
+          <div className={`p-3 border-b border-[#0B2C3D] flex items-center gap-2.5 ${collapsed ? 'justify-center' : ''}`}>
+            <div className="relative shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#0F8B8D] text-white flex items-center justify-center font-bold text-xs">
+                {currentUser.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              </div>
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] absolute -bottom-0.5 -right-0.5 ring-2 ring-[#0B2C3D]" title="Online" />
+            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1 truncate">
+                <div className="font-bold text-white text-xs truncate leading-tight">{currentUser.name}</div>
+                <div className="text-[10px] text-[#D7E6EE]/75 truncate leading-tight">{currentUser.department}</div>
+              </div>
+            )}
+          </div>
         )}
+
+        {onLogout && (
+          <div className="p-2 border-b border-[#0B2C3D]">
+            <button
+              onClick={onLogout}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 transition-all cursor-pointer ${
+                collapsed ? 'justify-center px-0' : ''
+              }`}
+              title="Log Out of Session"
+            >
+              <LogOut className="w-3.5 h-3.5 shrink-0 text-rose-400" />
+              {!collapsed && <span>Log Out</span>}
+            </button>
+          </div>
+        )}
+
+        <div className="p-3">
+          <div className={`flex items-center gap-1.5 text-emerald-400 font-semibold mb-0.5 ${collapsed ? 'justify-center' : ''}`}>
+            <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+            {!collapsed && <span>HIPAA Certified</span>}
+          </div>
+          {!collapsed && (
+            <p className="text-[10px] leading-tight text-[#D7E6EE]/60">
+              Multi-Tenant Isolation • AES-256
+            </p>
+          )}
+        </div>
       </div>
     </aside>
   );

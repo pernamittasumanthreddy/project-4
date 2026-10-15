@@ -1,19 +1,26 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   darkMode: 'class',
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
+        primary: '#123B52',
+        'primary-hover': '#0B2C3D',
+        secondary: '#0F8B8D',
+        'secondary-hover': '#0B7476',
+        medNavy: '#123B52',
+        medTeal: '#0F8B8D',
+        medBg: '#F4F7FA',
+        medBorder: '#DCE4EA',
         gateway: {
-          lightBg: '#F5F8FC',
+          lightBg: '#F4F7FA',
           lightSurface: '#FFFFFF',
-          lightBorder: '#DCE4EF',
-          lightText: '#0F172A',
+          lightBorder: '#DCE4EA',
+          lightText: '#1E293B',
           lightMuted: '#64748B',
           
           darkBg: '#0B1120',
@@ -24,13 +31,13 @@ module.exports = {
           darkText: '#F8FAFC',
           darkMuted: '#A8B4C7',
           
-          primary: '#2563EB',
-          primaryHover: '#1D4ED8',
+          primary: '#123B52',
+          primaryHover: '#0B2C3D',
           primaryDark: '#60A5FA',
           primaryDarkHover: '#93C5FD',
           
-          teal: '#0F9D8A',
-          tealDark: '#2DD4BF',
+          teal: '#0F8B8D',
+          tealDark: '#0B7476',
           
           success: '#16A34A',
           successDark: '#4ADE80',
